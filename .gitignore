@@ -1,0 +1,4 @@
+.env
+env.bat
+node_modules
+package-log.json
