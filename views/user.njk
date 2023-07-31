@@ -1,15 +1,79 @@
-<div class="UserCard" style="width: 805px; height: 458px; position: relative">
-  <div class="Background" style="width: 805px; height: 458px; left: 0px; top: 0px; position: absolute; background: white"></div>
-  <div class="Username" style="width: 116px; height: 60px; left: 63px; top: 61px; position: absolute; color: black; font-size: 48px; font-family: Inter; font-weight: 400; word-wrap: break-word">{{username}}</div>
-  <div class="Uid" style="left: 63px; top: 156px; position: absolute; color: #959595; font-size: 12px; font-family: Inter; font-weight: 400; word-wrap: break-word">{{uid}}</div>
-  <div class="Rating" style="left: 466px; top: 229px; position: absolute; color: black; font-size: 100px; font-family: Inter; font-weight: 400; word-wrap: break-word">{{gamesWon}}/{{gamesPlayed}}</div>
-  <div class="Elo" style="left: 84px; top: 229px; position: absolute; color: black; font-size: 100px; font-family: Inter; font-weight: 400; word-wrap: break-word">{{elo}}</div>
-  <div class="Footer" style="width: 806px; height: 62px; left: -1px; top: 396px; position: absolute; background: #008000"></div>
-  <div class="Joined" style="left: 63px; top: 130px; position: absolute; color: black; font-size: 14px; font-family: Inter; font-weight: 400; word-wrap: break-word">Joined <script>
-                var x = new Date({{ timestamp }}); 
-                document.write(x.getMonth()+"."+x.getDate(0)+"."+x.getFullYear());
-            </script></div>
-  <div class="Achievment" style="width: 100px; height: 100px; left: 352px; top: 71px; position: absolute; background: linear-gradient(0deg, rgba(92, 230, 170, 0.20) 0%, rgba(92, 230, 170, 0.20) 100%); border-radius: 9999px"><img src = "/ach-imgs/achievmenttrophy.png"></div>
-  <div class="Achievment" style="width: 100px; height: 100px; left: 498px; top: 71px; position: absolute; background: linear-gradient(0deg, rgba(140, 35, 140, 0.20) 0%, rgba(140, 35, 140, 0.20) 100%); border-radius: 9999px"><img src = "/ach-imgs/achievmentsnake.png"></div>
-  <div class="Achievment" style="width: 100px; height: 100px; left: 644px; top: 71px; position: absolute; background: linear-gradient(0deg, rgba(92, 230, 170, 0.20) 0%, rgba(92, 230, 170, 0.20) 100%); border-radius: 9999px"><img src = "/ach-imgs/achievmenttrophy.png"></div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/user-card.css">
+
+    <title>{{ username }} | MultiSnake Tournaments</title>
+  </head>
+  <body>
+    <div class="full">
+      <div class="user-info">
+        <div class="user-details">
+          <div class="username">{{ username }}</div>
+
+          <div class="joined">Joined <script>
+              var x = new Date({{ timestamp }});
+              document.write(x.getMonth() + "." + x.getDate(0) + "." + x.getFullYear());
+            </script>
+          </div>
+
+          <div class="uid">{{ uid }}</div>
+        </div>
+
+        <div class="achievments">
+          <div class = "ach-1">
+            <img class="achievment2" src="achievment1.png"/>
+          </div>
+
+          <div class="ach-2">
+            <img class="achievment2" src="achievment2.png"/>
+          </div>
+
+          <div class="ach-3">
+            <img class="achievment3" src="achievment3.png"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-info">
+        <div class="elo-details">
+          <div class="elo">{{ elo }}</div>
+        </div>
+
+        <div class="recent-games">
+          <div class="row-1">
+            <div class="round-1-label">SoJS Vs YouBeenWaffled</div>
+
+            <div class="round-1-elo">+14</div>
+          </div>
+
+          <div class="row-2">
+            <div class="round-1-label">SoJS Vs Mollthecoder</div>
+
+            <div class="round-1-elo2">-12</div>
+          </div>
+
+          <div class="row-3">
+            <div class="round-1-label">SoJS Vs YouBeenWaffled</div>
+
+            <div class="round-1-elo2">-12</div>
+          </div>
+
+          <div class="row-4">
+            <div class="round-1-label">SoJS Vs YouBeenWaffled</div>
+
+            <div class="round-1-elo">+15</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="green-bar">
+        <div class="rectangle-9"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

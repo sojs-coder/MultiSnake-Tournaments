@@ -1,0 +1,25 @@
+.full, .full * { box-sizing: border-box; }.full {display: flex; flex-direction: column; gap: 36px; align-items: center; justify-content: center; width: 691px; height: 458px; position: relative;}
+ .user-info {display: flex; flex-direction: row; align-items: center; justify-content: space-between; align-self: stretch;flex-shrink: 0; position: relative;}
+ .user-details {padding: 0px 0px 0px 40px; display: flex; flex-direction: column; gap: 1px; align-items: flex-start; justify-content: flex-start; flex-shrink: 0; position: relative;}
+ .username {color: #000000; text-align: left; font: 400 56px 'Inter', sans-serif; position: relative; width: 243px; height: 68px;}
+ .joined {color: #000000; text-align: left; font: 400 14px 'Inter', sans-serif; position: relative;}
+ .uid {color: #959595; text-align: left; font: 400 12px 'Inter', sans-serif; position: relative;}
+ .achievments {padding: 0px 20px 0px 0px; display: flex; flex-direction: row; gap: 25px; align-items: center; justify-content: center; flex-shrink: 0; position: relative;}
+ .ach-1 {display: flex; flex-direction: row; gap: 10px; align-items: flex-start; justify-content: flex-start; flex-shrink: 0; position: relative; overflow: visible;}
+ .ach-2 {display: flex; flex-direction: row; gap: 10px; align-items: flex-start; justify-content: flex-start; flex-shrink: 0; position: relative;}
+ .achievment2 {background: linear-gradient(to left, rgba(140, 35, 140, 0.20), rgba(140, 35, 140, 0.20)); border-radius: 50%; flex-shrink: 0; width: 100px; height: 100px; position: relative;}
+ .ach-3 {display: flex; flex-direction: row; gap: 10px; align-items: flex-start; justify-content: flex-start; flex-shrink: 0; position: relative;}
+ .achievment3 {background: linear-gradient(to left, rgba(92, 230, 170, 0.20), rgba(92, 230, 170, 0.20)); border-radius: 50%; flex-shrink: 0; width: 100px; height: 100px; position: relative;}
+ .game-info {display: flex; flex-direction: row; gap: 124px; align-items: flex-end; justify-content: center; align-self: stretch;flex-shrink: 0; position: relative;}
+ .elo-details {padding: 10px 10px 10px 0px; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; flex-shrink: 0; height: 173px; position: relative;}
+ .elo {color: #000000; text-align: left; font: 400 100px 'Inter', sans-serif; position: relative; align-self: stretch;flex: 1; display: flex;align-items: center;justify-content: flex-start}
+ .recent-games {display: flex; flex-direction: column; gap: 0px; align-items: center; justify-content: center; flex-shrink: 0; width: 253px; height: 173px; position: relative;}
+ .row-1 {border-radius: 1px; padding: 10px; display: flex; flex-direction: row; gap: 10px; align-items: center; justify-content: flex-start; align-self: stretch;flex-shrink: 0; height: 36px; position: relative;}
+ .round-1-label {color: #000000; text-align: left; font: 400 12px 'Inter', sans-serif; position: relative;}
+ .round-1-elo {color: #008000; text-align: left; font: 400 12px 'Inter', sans-serif; position: relative; display: flex;align-items: center;justify-content: flex-start}
+ .row-2 {border-radius: 1px; padding: 10px; display: flex; flex-direction: row; gap: 10px; align-items: center; justify-content: flex-start; align-self: stretch;flex-shrink: 0; height: 36px; position: relative;}
+ .round-1-elo2 {color: #cc2f14; text-align: left; font: 400 12px 'Inter', sans-serif; position: relative; display: flex;align-items: center;justify-content: flex-start}
+ .row-3 {border-radius: 1px; padding: 10px; display: flex; flex-direction: row; gap: 10px; align-items: center; justify-content: flex-start; align-self: stretch;flex-shrink: 0; height: 36px; position: relative;}
+ .row-4 {border-radius: 1px; padding: 10px; display: flex; flex-direction: row; gap: 10px; align-items: center; justify-content: flex-start; align-self: stretch;flex-shrink: 0; height: 36px; position: relative;}
+ .green-bar {display: flex; flex-direction: column; gap: 0px; align-items: center; justify-content: flex-end; align-self: stretch;flex-shrink: 0; height: 57px; position: relative;}
+ .rectangle-9 {background: #008000; align-self: stretch;flex-shrink: 0; height: 57px; position: relative;}
