@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/styles/activeTourney.css">
+        <link rel="stylesheet" href="/styles/universal.css">
+        <title>MultiSnake Tournaments</title>
+    </head>
+    <body>
+        <div class="active-tourney">
+            <div class="navbar">
+                <div class="left-link-group">
+                    <div class="link">
+                        <div class="link2">Home</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Discord</div>
+                    </div>
+                </div>
+                <div class="right-link-group">
+                    <div class="link">
+                        <div class="link2">Bracket</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">All Games</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Leaderboard</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Sign up</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Log in</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main">
+                <div class="multi-snake-tournaments">MultiSnake Tournaments</div>
+                <div class="_30-players-0-games-complete-150-prize">
+                    {{ t.players.length }} Players | {{ t.live_players.length }} Players left | ${{ t.prize }} Prize
+                </div>
+                <div class="game-feed">
+                    <div class="table">
+                        {% for game in g %}
+                            {% if not game.complete %}
+                                <div class="row">
+                                    <div class="game">Game #{{ game.game_number }}</div>
+                                    <div class="players">
+                                        {% for player in game.players %}
+                                            <a href = "/user/{{player.uid}}">{{player.username}}</a>&nbsp;
+                                        {% endfor %}
+                                    </div>
+                                    <div class="time">
+                                        <script>
+                                            document.write(new Date({{ game.start_at }}).toLocaleString());
+                                        </script>
+                                        AM PST
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
