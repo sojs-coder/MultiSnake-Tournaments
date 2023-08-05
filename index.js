@@ -35,6 +35,11 @@ app.get("/",async (req,res)=>{
             t: ongoingTourneys[0],
             g: games
         });
+    }else{
+        const nextTourney = await tManager.getUnactiveTourneys();
+        res.render("noactiveTourneyHome.njk",{
+            t: nextTourney[0],
+        });
     }
 })
 app.get("/user/:uid", async (req, res) => {

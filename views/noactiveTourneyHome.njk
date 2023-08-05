@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/styles/noactiveTourney.css">
+        <link rel="stylesheet" href="/styles/activeTourney.css">
+        <link rel="stylesheet" href="/styles/universal.css">
+        <title>MultiSnake Tournaments</title>
+    </head>
+    <body>
+        <div class="no-active-tourney">
+            <div class="navbar">
+                <div class="left-link-group">
+                    <div class="link">
+                        <div class="link2">Home</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Discord</div>
+                    </div>
+                </div>
+                <div class="right-link-group">
+                    <div class="link">
+                        <div class="link2">All Games</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Leaderboard</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Sign up</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Log in</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main">
+                <div class="multi-snake-tournaments">MultiSnake Tournaments</div>
+                <script>
+                    setInterval(count, 500);
+                    function count() {
+                        console.log("wheee")
+                        var countDownDate = {{ t.start_at }}
+                        var now = new Date().getTime();
+                        var timeleft = countDownDate - now;
+
+                        var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+                        var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+                        var d = document.getElementById("d");
+                        var h = document.getElementById("h");
+                        var m = document.getElementById("m");
+                        var s = document.getElementById("s");
+
+                        d.innerHTML = days;
+                        h.innerHTML = hours;
+                        m.innerHTML = minutes;
+                        s.innerHTML = seconds;
+                    }
+                </script>
+                <div class="timer">
+                    <span id = "d">3</span>&nbsp;days,&nbsp;<span id = "h">13</span>&nbsp;hours, &nbsp;<span id = "m">56</span>&nbsp;minutes, &nbsp;<span id = "s">12</span>&nbsp;seconds
+                </div><a class="join-the-tournament" href = "/join/{{ t.uid }}">Join the tournament</a>
+                <div class="_156-players-780-prize">{{ t.player.length }} Players | ${{ t.prize }} Prize</div>
+            </div>
+        </div>
+
+    </body>
+</html>

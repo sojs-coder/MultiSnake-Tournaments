@@ -12,6 +12,18 @@ class TourneyManager {
         this.supabaseUrl = "https://aurcjoehedrtjdasadyt.supabase.co"
         this.supabase = createClient(this.supabaseUrl, process.env.SUPAKEY);
     }
+    async getUnactiveTourneys(){
+        let { data: games, error } = await this.supabase
+        .from('games')
+        .select('*')
+        .is('ongoing',false)
+        .is('complete',false)
+    if (error) {
+        console.error(error);
+        return { error: true, message: error.message }
+    };
+    return games;
+    }
     async getGamesFromTourney(tourney) {
         let { data: games, error } = await this.supabase
             .from('games')
