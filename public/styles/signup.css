@@ -1,0 +1,136 @@
+.signup,
+.signup * {
+  box-sizing: border-box;
+}
+.signup {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  height: 100vh;
+  position: relative;
+}
+.main {
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  align-self: stretch;
+  position: relative;
+}
+.center-blob {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.text-56 {
+  color: #ffffff;
+  text-align: center;
+  font: 400 56px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.seek-account {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.username {
+  background: #ffffff;
+  flex-shrink: 0;
+  width: 577px;
+  height: 45px;
+  position: relative;
+}
+.seek-button {
+  background: #008000;
+  padding: 0px 10px 0px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.find-account {
+  color: #ffffff;
+  text-align: center;
+  font: 400 20px "Inter", sans-serif;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.results {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.result-username {
+  color: #12b36d;
+  text-align: center;
+  font: 400 20px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.result-elo {
+  color: #ffffff;
+  text-align: center;
+  font: 400 20px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.result-age {
+  color: #ffffff;
+  text-align: center;
+  font: 400 20px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.connect-button {
+  background: #008000;
+  padding: 5px 10px 5px 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.connect-account {
+  color: #ffffff;
+  text-align: center;
+  font: 400 20px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

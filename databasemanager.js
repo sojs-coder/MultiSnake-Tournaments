@@ -12,17 +12,62 @@ class TourneyManager {
         this.supabaseUrl = "https://aurcjoehedrtjdasadyt.supabase.co"
         this.supabase = createClient(this.supabaseUrl, process.env.SUPAKEY);
     }
-    async getUnactiveTourneys(){
+    async getTourneysFromPlayer(player_uid) {
+        let { data: tourneys, error } = await this.supabase
+            .from("users")
+            .select("tourneys")
+            .eq("uid", player);
+        if (error) {
+            console.error(error);
+            return { error: true, message: error.message }
+        };
+        return tourneys;
+    }
+    async getUserByEmail(email) {
+        let { data: user, error } = await this.supabase
+            .from("users")
+            .select("*")
+            .eq("email", email);
+        if (error) {
+            console.error(error);
+            return { error: true, message: error.message }
+        };
+        return user;
+    }
+    async getUser(uid) {
+        let { data: user, error } = await this.supabase
+            .from("users")
+            .select("*")
+            .eq("uid", uid);
+        if (error) {
+            console.error(error);
+            return { error: true, message: error.message }
+        };
+        return user;
+    }
+    async putUser({ uid, username, elo, email, passwordHash, verified }) {
+        var user = { uid, username, elo, email, passwordHash, verified }
+        const { data, error } = await this.supabase
+            .from('users')
+            .upsert(user)
+            .select();
+        if (error) {
+            console.error(error);
+            return { error: true, message: error.message }
+        }
+        return data
+    }
+    async getUnactiveTourneys() {
         let { data: games, error } = await this.supabase
-        .from('games')
-        .select('*')
-        .is('ongoing',false)
-        .is('complete',false)
-    if (error) {
-        console.error(error);
-        return { error: true, message: error.message }
-    };
-    return games;
+            .from('games')
+            .select('*')
+            .is('ongoing', false)
+            .is('complete', false)
+        if (error) {
+            console.error(error);
+            return { error: true, message: error.message }
+        };
+        return games;
     }
     async getGamesFromTourney(tourney) {
         let { data: games, error } = await this.supabase
@@ -166,9 +211,7 @@ class TourneyManager {
             gamesToday++;
             currentTime = addXHours(currentTime, gameHourDiff);
             if (gamesToday >= max_games_day) {
-                console.log("cheerio")
                 currentTime = add24Hours(game_start);
-                console.log(currentTime)
                 game_start = currentTime;
                 gamesToday = 0;
             }
@@ -269,6 +312,7 @@ class TourneyManager {
             return player !== winner;
         });
         // finish here remove dead players from live_players from `tourney.live_players`
+        // add all dead players to `tourney.ranked_players`
         var { data, error } = await this.supabase
             .from('games')
             .update({ complete: true, winner })
@@ -291,9 +335,10 @@ class TourneyManager {
         return data
 
     }
-    async createTourney(entry_fee, start_at, max_games_per_day, game_hour_diff) {
+    async createTourney(entry_fee, start_at, max_games_per_day, game_hour_diff,friendlyName) {
         var tourney = {
             uid: guid(),
+            name: friendlyName,
             players: [],
             entry_fee,
             prize: 0,

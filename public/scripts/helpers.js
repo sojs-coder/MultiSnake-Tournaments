@@ -146,3 +146,30 @@ const elo = ([...ratings], kFactor = 32, selfRating) => {
     }
     return ratings;
 };
+function handleRes(response) {
+    if (response.redirect) {
+        redirect(response.redirect);
+    }
+    displayNotif(response.message, response.color);
+}
+function redirect(to) {
+    setTimeout(() => {
+        window.location.replace(to)
+    }, 750);
+}
+function displayNotif(notifText, color) {
+    const notification = document.createElement("div");
+    notification.innerHTML = notifText || "Something happened...";
+    notification.classList.add("notification");
+    notification.style.backgroundColor = color || "white";
+    notification.style.color = (color) ? "#fff" : "#000";
+    if (!color) {
+        notification.style.border = "1px solid white; "
+    }
+    document.getElementById("notif-box").appendChild(notification);
+
+    // Automatically remove the notification after 3 seconds
+    setTimeout(function () {
+        document.getElementById("notif-box").removeChild(notification);
+    }, 3000);
+}

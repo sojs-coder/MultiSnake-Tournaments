@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/styles/activeTourney.css">
         <link rel="stylesheet" href="/styles/universal.css">
+        <script src = "/scripts/helpers.js"></script>
         <title>MultiSnake Tournaments</title>
     </head>
     <body>
@@ -38,7 +39,7 @@
                 </div>
             </div>
             <div class="main">
-                <div class="multi-snake-tournaments">MultiSnake Tournaments</div>
+                <h1 class="multi-snake-tournaments">MultiSnake Tournaments</h1>
                 <div class="_30-players-0-games-complete-150-prize">
                     {{ t.players.length }} Players | {{ t.live_players.length }} Players left | ${{ t.prize }} Prize
                 </div>
@@ -66,6 +67,6 @@
                 </div>
             </div>
         </div>
-
+        <div id="notif-box"></div>
     </body>
 </html>
