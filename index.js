@@ -52,8 +52,9 @@ app.get("/account/:uid", async (req, res, next) => {
     const user = await dbManager.getUser(req.params.uid);
     if(!user) return next();
     tManager.putUser(user);
+    user.elo = user.elo || 400
     if(req.params.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk",user)
-    res.render("user.njk", user)
+    res.render("public_user.njk", user)
 });
 app.get("/account", async (req, res) => {
     if (!req.session.user) {
@@ -61,6 +62,7 @@ app.get("/account", async (req, res) => {
     }
     const user = await dbManager.getUser(req.session.user.uid);
     if(!user) return next();
+    user.elo = user.elo || 400
     tManager.putUser(user);
     if(req.session.user.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk",user)
     res.render("user.njk", user)

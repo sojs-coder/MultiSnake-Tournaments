@@ -1,0 +1,160 @@
+.public-view,
+.public-view * {
+  box-sizing: border-box;
+}
+.public-view {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: relative;
+  height: 100vh;
+}
+.main {
+  background: #000000;
+  padding: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+}
+.user-data {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.username-and-elo {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.username {
+  color: #ffffff;
+  text-align: center;
+  font: 400 56px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.elo {
+  color: #5ce6aa;
+  text-align: center;
+  font: 400 56px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.uid {
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  font: 400 18px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.games-won-game-played {
+  color: #ffffff;
+  text-align: center;
+  font: 400 24px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tourneys-won-tourneys-played {
+  color: #ffffff;
+  text-align: center;
+  font: 400 24px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+._300-won-from-tourneys {
+  color: #ffffff;
+  text-align: center;
+  font: 400 24px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.false-hr {
+  background: #008000;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 2px;
+  position: relative;
+}
+.tourneys-played-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.tourney-row {
+  display: flex;
+  flex-direction: row;
+  gap: 82px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.tourney-name {
+  color: #5ce6aa;
+  text-align: center;
+  font: 400 24px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tourney-prize {
+  color: #ffffff;
+  text-align: center;
+  font: 400 24px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.num-players {
+  color: #ffffff;
+  text-align: center;
+  font: 400 24px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rank {
+  color: #ffffff;
+  text-align: center;
+  font: 400 24px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
