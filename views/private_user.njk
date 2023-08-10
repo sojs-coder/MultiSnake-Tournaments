@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <script src = "/scripts/helpers.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/styles/private_user.css">
+        <link rel="stylesheet" href="/styles/universal.css">
+        <title>MultiSnake Tournaments</title>
+    </head>
+    <body>
+        <div class="private-view">
+            <div class="navbar">
+                <div class="left-link-group">
+                    <div class="link">
+                        <div class="link2">Home</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Discord</div>
+                    </div>
+                </div>
+                <div class="right-link-group">
+                    <div class="link">
+                        <div class="link2">All Games</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Leaderboard</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Sign up</div>
+                    </div>
+                    <div class="link">
+                        <div class="link2">Log in</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main">
+                <div class="user-data">
+                    <div class="username-and-elo">
+                        <div class="username">{{ username }}</div>
+                        <div class="elo">({{ elo }})</div>
+                    </div>
+                    <div class="uid">{{ uid }}</div>
+                    <a class="view-public-profile" href = "/account/{{ uid }}">View public profile</a>
+                    <div class="games-won-game-played">{{ gamesWon }} games won/{{ gamesPlayed }} games played</div>
+                    <div class="tourneys-won-tourneys-played">
+                        {{ tourneysWon }} tourneys won/{{ tourneysPlayed }} tourneys played
+                    </div>
+                </div>
+                <div class="false-hr"></div>
+                {# <div class="game-data">
+                    <div class="game-number">Game #2</div>
+                    <div class="game-players">Mollthecoder (400) | SoJS (538) | Fred (220) | Joe Mama (380)</div>
+                    <div class="game-time">12/3/4 5:30 - In 0 days, 5 hours, 34 minutes, and 3 seconds</div>
+                    <div class="game-link">
+                        <span>
+                            <span class="game-link-span">https://multisnake.xyz/play/location_bbd1b3a5-9072-4a61-ae3a-1d5f18c0e4a1?type=tourney/</span>
+                            <span class="game-link-span2">Join link will reveal 3 minutes before start of the game. </span>
+                            <a class="game-link-span3" href = "#" onclick = "location.reload()">Refresh the page to see it.</a></span></span>
+                    </div>
+                    <div class="warning">
+                        <span>
+                            <span class="warning-span">Do not share the join link with anyone. Sharing the link with someone will result in immediate disqualification. Join the game within 1 minute of the game starting. Failure to do so will result in a loss</span>
+                    </div>
+                </div> #}
+                {{ tourneys }}
+                {% for t in tourneys %}
+                {% if not t.complete %}
+                <div class="tourney-data">
+                    <div class="tourney-name">
+                        <span>
+                            <span class="tourney-name-span">{{ t.name }} (Joined)</span>
+                            {# <span class="tourney-name-span2">(Join)</span> #}
+                    </div>
+                    <div class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</div>
+                    <script>
+                    setInterval(count, 500);
+                    function count() {
+                        var countDownDate = {{ t.start_at }}
+                        var now = new Date().getTime();
+                        var timeleft = countDownDate - now;
+
+                        var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+                        var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+                        var d = document.getElementById("d");
+                        var h = document.getElementById("h");
+                        var m = document.getElementById("m");
+                        var s = document.getElementById("s");
+
+                        d.innerHTML = days;
+                        h.innerHTML = hours;
+                        m.innerHTML = minutes;
+                        s.innerHTML = seconds;
+                    }
+                </script>
+                    <div class="tourney-start">{% if t.ongoing %}Starts in &nbsp;<span id = "d"></span>&nbsp;days,&nbsp;<span id = "h"></span>&nbsp;hours, &nbsp;<span id = "m"></span>&nbsp;minutes, and&nbsp;<span id = "s"></span>&nbsp;seconds{% else %}Round {{ t.round_num }}{% endif %}</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="notif-box"></div>
+    </body>
+</html>

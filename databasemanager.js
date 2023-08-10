@@ -16,7 +16,7 @@ class TourneyManager {
         let { data: tourneys, error } = await this.supabase
             .from("users")
             .select("tourneys")
-            .eq("uid", player);
+            .eq("uid", player_uid);
         if (error) {
             console.error(error);
             return { error: true, message: error.message }
@@ -168,7 +168,7 @@ class TourneyManager {
         return live_players[0].live_players;
     }
     async startTournament(uid) {
-        var { live_players: stillIn, start_at, max_games_per_day, game_hour_diff } = await this.getTourney(uid);
+        var { live_players: stillIn, start_at, max_games_per_day, game_hour_diff, round_num } = await this.getTourney(uid);
         stillIn = await Promise.all(stillIn.map(async (puid) => {
             return dbManager.getUser(puid)
         }));
@@ -185,13 +185,14 @@ class TourneyManager {
         });
         var groups = this.group(stillIn, 4);
         // https://www.unixtimestamp.com/
-        var games = await this.createBatchGames(groups, start_at, max_games_per_day, game_hour_diff, uid);
+        var games = await this.createRound(uid, groups, start_at, max_games_per_day, game_hour_diff, round_num+1);
         var { data, error } = this.supabase
             .from("tourneys")
             .update({ ongoing: true })
             .eq("uid", uid)
     }
-    async createBatchGames(groups, game_start, max_games_day, gameHourDiff, tourney) {
+    async createRound(tourney, groups, game_start, max_games_day, gameHourDiff, round_num) {
+        var roundUID = guid();
         var currentTime = game_start;
         var gamesToday = 0;
         var add24Hours = (t) => t + (1000 * 60 * 60 * 24);
@@ -206,7 +207,8 @@ class TourneyManager {
                 tourney,
                 ongoing: false,
                 players,
-                link: `https://multisnake.xyz/play/location_${guid()}?type=tourney`
+                link: `https://multisnake.xyz/play/location_${guid()}?type=tourney`,
+                round: roundUID
             }
             gamesToday++;
             currentTime = addXHours(currentTime, gameHourDiff);
@@ -223,6 +225,17 @@ class TourneyManager {
                 games
             )
             .select();
+        var round = {
+            uid: roundUID,
+            timestamp: new Date().getTime(),
+            num_games: games.length,
+            num_players: groups.flat().length,
+            round_num
+        }
+        const { d, e } = await this.supabase
+            .from("rounds")
+            .insert(round)
+            .select()
         if (error) {
             console.error(error);
             return { error: true, message: error.message }
@@ -306,7 +319,7 @@ class TourneyManager {
         };
         return tourneys
     }
-    async finishRound(gameID, winner) {
+    async finishGame(gameID, winner) {
         var { players, tourney } = await this.getGame(gameID);
         var deadPlayers = players.filter(player => {
             return player !== winner;
@@ -323,7 +336,7 @@ class TourneyManager {
         };
         return data
     }
-    async startRound(gameID) {
+    async startGame(gameID) {
         var { data, error } = await this.supabase
             .from('games')
             .update({ ongoing: true })
@@ -335,7 +348,7 @@ class TourneyManager {
         return data
 
     }
-    async createTourney(entry_fee, start_at, max_games_per_day, game_hour_diff,friendlyName) {
+    async createTourney(entry_fee, start_at, max_games_per_day, game_hour_diff, friendlyName) {
         var tourney = {
             uid: guid(),
             name: friendlyName,
@@ -347,7 +360,9 @@ class TourneyManager {
             start_at,
             winner: null,
             max_games_per_day,
-            game_hour_diff
+            game_hour_diff,
+            round_num: 0,
+            on_round: null
         }
         const { data, error } = await this.supabase
             .from('tourneys')

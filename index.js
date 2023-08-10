@@ -4,6 +4,7 @@ const nunjucks = require("nunjucks");
 const session = require('express-session');
 
 const { dbManager, tManager } = require("./databasemanager");
+const { tmpdir } = require('os');
 const app = express();
 const server = http.createServer(app);
 app.use(express.json());
@@ -62,10 +63,14 @@ app.get("/account", async (req, res) => {
     }
     const user = await dbManager.getUser(req.session.user.uid);
     if(!user) return next();
-    user.elo = user.elo || 400
+    user.elo = user.elo || 400;
+    var notOngoingTourneys = await tManager.getUnactiveTourneys();
+    var joinedTourneys = await tManager.getTourneysFromPlayer(req.session.user.uid);
+    var tourneys = await Promise.all(joinedTourneys[0].tourneys.map(t=>{
+        return tManager.getTourney(t);
+    }));
     tManager.putUser(user);
-    if(req.session.user.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk",user)
-    res.render("user.njk", user)
+    res.render("private_user.njk", {...user, tourneys});
 })
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;

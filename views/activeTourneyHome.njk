@@ -51,7 +51,7 @@
                                     <div class="game">Game #{{ game.game_number }}</div>
                                     <div class="players">
                                         {% for player in game.players %}
-                                            <a href = "/user/{{player.uid}}">{{player.username}}</a>&nbsp;
+                                            <a href = "/account/{{player.uid}}">{{player.username}}</a>&nbsp;
                                         {% endfor %}
                                     </div>
                                     <div class="time">
