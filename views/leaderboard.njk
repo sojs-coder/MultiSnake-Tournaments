@@ -15,145 +15,62 @@
             <div class="navbar">
                 <div class="left-link-group">
                     <div class="link">
-                        <div class="link2">Home</div>
+                        <a href = "/" class="link2">Home</a>
                     </div>
                     <div class="link">
-                        <div class="link2">Discord</div>
+                        <a class="link2">Discord</a>
                     </div>
                 </div>
                 <div class="right-link-group">
                     <div class="link">
-                        <div class="link2">All Games</div>
+                        <a class="link2">All Games</a>
                     </div>
                     <div class="link">
-                        <div class="link2">Leaderboard</div>
+                        <a href = "/leaderboard"class="link2">Leaderboard</a>
                     </div>
                     <div class="link">
-                        <div class="link2">Sign up</div>
+                        <a href = "/signup" class="link2">Sign up</a>
                     </div>
                     <div class="link">
-                        <div class="link2">Log in</div>
+                        <a href = "/login"class="link2">Log in</a>
                     </div>
                 </div>
             </div>
             <div class="main">
                 <div class="top-row-leaders">
                     <div class="title-leaders">Leaderboard</div>
-                    <div class="leader-login-warning">
-        Elos update after a visit to that users profile. This means that
-        unactive players who never log in will not rise as they gain elo.
-      </div>
+                    <div class="leader-login-warning">All stats update after the user logs in on multisnake tournaments. Unactive player stats will not update</div>
                 </div>
                 <div class="leader-table">
-                    <div class="leaderboard-first">
-                        <div class="fname">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-second">
-                        <div class="sname">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-third">
-                        <div class="tname">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
+                    {% for player in ranks %}
+                        {% if (loop.index == 1) %}
+                            <div class="leaderboard-row leaderboard-first">
+                                <a href = "/account/{{ player.uid }}" class="fname">{{ player.username }}</a>
+                                <div class="elo">{{ player.elo }}</div>
+                                <div class="games-played">{{ player.gamesPlayed }} games played</div>
+                            </div>
+                        {% elif(loop.index == 2) %}
+                            <div class="leaderboard-row leaderboard-second">
+                                <a href = "/account/{{ player.uid }}"class="sname">{{ player.username }}</a>
+                                <div class="elo">{{ player.elo }}</div>
+                                <div class="games-played">{{ player.gamesPlayed }} games played</div>
+                            </div>
+                        {% elif (loop.index == 3)%}
+                            <div class="leaderboard-row leaderboard-third ">
+                                <a href = "/account/{{ player.uid }}"class="tname">{{ player.username }}</a>
+                                <div class="elo">{{ player.elo }}</div>
+                                <div class="games-played">{{ player.gamesPlayed }} games played</div>
+                            </div>
+                        {% else %}
+                            <div class="leaderboard-row">
+                                <a href = "/account/{{ player.uid }}"class="name">{{ player.username }}</a>
+                                <div class="elo">{{ player.elo }}</div>
+                                <div class="games-played">{{ player.gamesPlayed }} games played</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                     <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div class="name">SoJS</div>
-                        <div class="elo">400</div>
-                        <div class="games-played">918 games played</div>
+                        <div style="color:white">*Has not played any tournament games yet, so this is based on nothing</div>
                     </div>
                 </div>
             </div>

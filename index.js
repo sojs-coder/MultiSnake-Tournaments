@@ -50,7 +50,13 @@ app.get("/signup", (req, res) => {
     res.render("signup.njk");
 });
 app.get("/leaderboard", async (req, res) => {
-    res.render("leaderboard.njk");
+    var ranks = await tManager.getRanks();
+    ranks = ranks.map(player=>{
+        player.elo = player.elo || "400*"
+        return player
+    })
+
+    res.render("leaderboard.njk",{ranks});
 })
 app.get("/account/:uid", async (req, res, next) => {
     const user = await dbManager.getUser(req.params.uid);
@@ -65,8 +71,7 @@ app.get("/account", async (req, res) => {
         return res.redirect("/login")
     }
     const user = await dbManager.getUser(req.session.user.uid);
-    tManager.putUser(user);
-    var updatedUser = await tManager.getUser(req.session.user.uid);
+    var updatedUser = await tManager.putUser(user);
     updatedUser = updatedUser[0]
     if(!user) return next();
     user.elo = user.elo || 400;
@@ -78,7 +83,6 @@ app.get("/account", async (req, res) => {
     var nOTourneys = await Promise.all(filteredNotOngoingTourneys.map(t=>{
         return tManager.getTourney(t.uid);
     }));
-    console.log(nOTourneys)
     var joinedTourneys = await tManager.getTourneysFromPlayer(req.session.user.uid);
     if(!joinedTourneys[0].tourneys) joinedTourneys[0].tourneys = [];
     var jtourneys = await Promise.all(joinedTourneys[0].tourneys.map(t=>{

@@ -12,6 +12,18 @@ class TourneyManager {
         this.supabaseUrl = "https://aurcjoehedrtjdasadyt.supabase.co"
         this.supabase = createClient(this.supabaseUrl, process.env.SUPAKEY);
     }
+    async getRanks(limit = 22) {
+        let { data: players, error } = await this.supabase
+            .from("users")
+            .select("*")
+            .order("elo", { ascending: true, nullsLast: true })
+            .limit(limit)
+        if (error) {
+            console.error(error);
+            return { error: true, message: error.message }
+        };
+        return players;
+    }
     async getTourneysFromPlayer(player_uid) {
         let { data: tourneys, error } = await this.supabase
             .from("users")
@@ -45,8 +57,8 @@ class TourneyManager {
         };
         return user;
     }
-    async putUser({ uid, username, elo, email, passwordHash, verified }) {
-        var user = { uid, username, elo, email, passwordHash, verified }
+    async putUser({ uid, username, elo, email, passwordHash, verified, gamesPlayed }) {
+        var user = { uid, username, elo, email, passwordHash, verified, gamesPlayed }
         const { data, error } = await this.supabase
             .from('users')
             .upsert(user)
@@ -197,7 +209,7 @@ class TourneyManager {
         });
         var groups = this.group(stillIn, 4);
         // https://www.unixtimestamp.com/
-        var games = await this.createRound(uid, groups, start_at, max_games_per_day, game_hour_diff, round_num+1);
+        var games = await this.createRound(uid, groups, start_at, max_games_per_day, game_hour_diff, round_num + 1);
         var { data, error } = this.supabase
             .from("tourneys")
             .update({ ongoing: true })
@@ -487,6 +499,7 @@ class DBManager {
 
 const dbManager = new DBManager();
 const tManager = new TourneyManager();
+
 module.exports = {
     dbManager,
     tManager
