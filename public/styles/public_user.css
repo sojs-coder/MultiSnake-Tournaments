@@ -2,6 +2,7 @@
 .public-view * {
   box-sizing: border-box;
 }
+
 .public-view {
   display: flex;
   flex-direction: column;
@@ -11,6 +12,7 @@
   position: relative;
   height: 100vh;
 }
+
 .main {
   background: #000000;
   padding: 100px;
@@ -23,6 +25,7 @@
   flex: 1;
   position: relative;
 }
+
 .user-data {
   display: flex;
   flex-direction: column;
@@ -32,6 +35,7 @@
   flex-shrink: 0;
   position: relative;
 }
+
 .username-and-elo {
   display: flex;
   flex-direction: row;
@@ -41,6 +45,7 @@
   flex-shrink: 0;
   position: relative;
 }
+
 .username {
   color: #ffffff;
   text-align: center;
@@ -50,6 +55,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .elo {
   color: #5ce6aa;
   text-align: center;
@@ -59,6 +65,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .uid {
   color: rgba(255, 255, 255, 0.5);
   text-align: center;
@@ -68,6 +75,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .games-won-game-played {
   color: #ffffff;
   text-align: center;
@@ -77,6 +85,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .tourneys-won-tourneys-played {
   color: #ffffff;
   text-align: center;
@@ -86,6 +95,7 @@
   align-items: center;
   justify-content: center;
 }
+
 ._300-won-from-tourneys {
   color: #ffffff;
   text-align: center;
@@ -95,6 +105,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .false-hr {
   background: #008000;
   align-self: stretch;
@@ -102,6 +113,7 @@
   height: 2px;
   position: relative;
 }
+
 .tourneys-played-table {
   display: flex;
   flex-direction: column;
@@ -112,6 +124,7 @@
   flex-shrink: 0;
   position: relative;
 }
+
 .tourney-row {
   display: flex;
   flex-direction: row;
@@ -122,6 +135,7 @@
   flex-shrink: 0;
   position: relative;
 }
+
 .tourney-name {
   color: #5ce6aa;
   text-align: center;
@@ -131,6 +145,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .tourney-prize {
   color: #ffffff;
   text-align: center;
@@ -140,6 +155,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .num-players {
   color: #ffffff;
   text-align: center;
@@ -149,6 +165,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .rank {
   color: #ffffff;
   text-align: center;

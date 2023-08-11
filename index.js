@@ -48,6 +48,9 @@ app.get("/login", (req, res) => {
 });
 app.get("/signup", (req, res) => {
     res.render("signup.njk");
+});
+app.get("/leaderboard", async (req, res) => {
+    res.render("leaderboard.njk");
 })
 app.get("/account/:uid", async (req, res, next) => {
     const user = await dbManager.getUser(req.params.uid);

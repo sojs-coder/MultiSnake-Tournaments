@@ -1,0 +1,183 @@
+.leaderboard,
+.leaderboard * {
+    box-sizing: border-box;
+}
+
+.leaderboard {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.main {
+    background: #000000;
+    padding: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    flex: 1;
+    align-self: stretch;
+    position: relative;
+}
+
+.top-row-leaders {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.title-leaders {
+    color: #ffffff;
+    text-align: left;
+    font: 400 56px "Inter", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.leader-login-warning {
+    color: #a5a5a5;
+    text-align: left;
+    font: 400 24px "Inter", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.leader-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.leaderboard-first {
+    background: linear-gradient(90deg,
+            rgba(255, 248, 79, 0.25) 0%,
+            rgba(255, 248, 79, 0.16) 45.48557102680206%,
+            rgba(255, 248, 79, 0) 100%);
+    padding: 5px 10px 5px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.fname {
+    color: #fff84f;
+    text-align: left;
+    font: 400 24px "Inter", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.elo {
+    color: #ffffff;
+    text-align: left;
+    font: 400 24px "Inter", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.games-played {
+    color: #ffffff;
+    text-align: left;
+    font: 400 24px "Inter", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.leaderboard-second {
+    background: linear-gradient(90deg,
+            rgba(218, 218, 218, 0.25) 0%,
+            rgba(218, 218, 218, 0.08) 45.22174596786499%,
+            rgba(218, 218, 218, 0) 100%);
+    padding: 5px 10px 5px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.sname {
+    color: #dadada;
+    text-align: left;
+    font: 400 24px "Inter", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.leaderboard-third {
+    background: linear-gradient(90deg,
+            rgba(176, 141, 87, 0.25) 0%,
+            rgba(176, 141, 87, 0) 100%);
+    padding: 5px 10px 5px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.tname {
+    color: #b08d57;
+    text-align: left;
+    font: 400 24px "Inter", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.leaderboard-row {
+    padding: 5px 10px 5px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.name {
+    color: #ffffff;
+    text-align: left;
+    font: 400 24px "Inter", sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}

@@ -2,6 +2,7 @@
 .private-view * {
   box-sizing: border-box;
 }
+
 .private-view {
   display: flex;
   flex-direction: column;
@@ -26,6 +27,7 @@
   width: 100%;
   position: relative;
 }
+
 .user-data {
   display: flex;
   flex-direction: column;
@@ -35,6 +37,7 @@
   flex-shrink: 0;
   position: relative;
 }
+
 .username-and-elo {
   display: flex;
   flex-direction: row;
@@ -44,6 +47,7 @@
   flex-shrink: 0;
   position: relative;
 }
+
 .username {
   color: #ffffff;
   text-align: center;
@@ -53,6 +57,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .elo {
   color: #5ce6aa;
   text-align: center;
@@ -62,6 +67,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .uid {
   color: rgba(255, 255, 255, 0.5);
   text-align: center;
@@ -71,6 +77,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .view-public-profile {
   color: rgba(255, 255, 255, 0.5);
   text-align: center;
@@ -81,6 +88,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .games-won-game-played {
   color: #ffffff;
   text-align: center;
@@ -90,6 +98,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .tourneys-won-tourneys-played {
   color: #ffffff;
   text-align: center;
@@ -99,6 +108,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .false-hr {
   background: #008000;
   align-self: stretch;
@@ -106,6 +116,7 @@
   height: 2px;
   position: relative;
 }
+
 .game-data {
   display: flex;
   flex-direction: column;
@@ -116,6 +127,7 @@
   flex-shrink: 0;
   position: relative;
 }
+
 .game-number {
   color: #5ce6aa;
   text-align: left;
@@ -126,6 +138,7 @@
   align-items: center;
   justify-content: flex-start;
 }
+
 .game-players {
   color: #ffffff;
   text-align: left;
@@ -136,6 +149,7 @@
   align-items: center;
   justify-content: flex-start;
 }
+
 .game-time {
   color: #ffffff;
   text-align: left;
@@ -146,6 +160,7 @@
   align-items: center;
   justify-content: flex-start;
 }
+
 .game-link {
   text-align: left;
   font: 400 24px "Inter", sans-serif;
@@ -155,20 +170,24 @@
   align-items: center;
   justify-content: flex-start;
 }
+
 .game-link-span {
   color: #ffffff;
   font: 400 24px "Inter", sans-serif;
   text-decoration: underline;
 }
+
 .game-link-span2 {
   color: #ffffff;
   font: 400 24px "Inter", sans-serif;
 }
+
 .game-link-span3 {
   color: #12b36d;
   font: 400 24px "Inter", sans-serif;
   text-decoration: underline;
 }
+
 .warning {
   color: #fff84f;
   text-align: left;
@@ -179,18 +198,22 @@
   align-items: center;
   justify-content: flex-start;
 }
+
 .warning-span {
   color: #fff84f;
   font: 400 18px "Inter", sans-serif;
 }
+
 .warning-span2 {
   color: #fff84f;
   font: 400 18px "Inter", sans-serif;
 }
+
 .warning-span3 {
   color: #fff84f;
   font: 400 18px "Inter", sans-serif;
 }
+
 .tourney-data {
   display: flex;
   flex-direction: column;
@@ -201,6 +224,7 @@
   flex-shrink: 0;
   position: relative;
 }
+
 .tourney-name {
   color: #5ce6aa;
   text-align: left;
@@ -211,19 +235,23 @@
   align-items: center;
   justify-content: flex-start;
 }
+
 .tourney-name-span {
   color: #5ce6aa;
   font: 400 24px "Inter", sans-serif;
 }
+
 .tourney-name-span2 {
   color: #5ce6aa;
   font: 400 24px "Inter", sans-serif;
   text-decoration: underline;
 }
+
 .tourney-name-span3 {
   color: #5ce6aa;
   font: 400 24px "Inter", sans-serif;
 }
+
 .tourney-players {
   color: #ffffff;
   text-align: left;
@@ -234,6 +262,7 @@
   align-items: center;
   justify-content: flex-start;
 }
+
 .tourney-start {
   color: #ffffff;
   text-align: left;

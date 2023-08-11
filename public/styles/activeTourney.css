@@ -1,10 +1,12 @@
-body{
-    margin: 0;
+body {
+  margin: 0;
 }
+
 .active-tourney,
 .active-tourney * {
   box-sizing: border-box;
 }
+
 .active-tourney {
   display: flex;
   flex-direction: column;
@@ -26,6 +28,7 @@ body{
   flex: 1;
   position: relative;
 }
+
 .multi-snake-tournaments {
   color: #ffffff;
   text-align: center;
@@ -35,6 +38,7 @@ body{
   align-items: center;
   justify-content: center;
 }
+
 ._30-players-0-games-complete-150-prize {
   color: #ffffff;
   text-align: center;
@@ -44,6 +48,7 @@ body{
   align-items: center;
   justify-content: center;
 }
+
 .game-feed {
   padding: 29px 0px 29px 0px;
   display: flex;
@@ -55,6 +60,7 @@ body{
   flex-shrink: 0;
   position: relative;
 }
+
 .table {
   display: flex;
   flex-direction: column;
@@ -65,6 +71,7 @@ body{
   flex-shrink: 0;
   position: relative;
 }
+
 .row {
   display: flex;
   flex-direction: row;
@@ -75,6 +82,7 @@ body{
   flex-shrink: 0;
   position: relative;
 }
+
 .game {
   color: #12b36d;
   text-align: center;
@@ -84,6 +92,7 @@ body{
   align-items: center;
   justify-content: center;
 }
+
 .players {
   color: #ffffff;
   text-align: center;
@@ -93,6 +102,7 @@ body{
   align-items: center;
   justify-content: center;
 }
+
 .time {
   color: #ffffff;
   text-align: center;
