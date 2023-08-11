@@ -9,7 +9,7 @@ body {
     flex-direction: row;
     gap: 0px;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     align-self: stretch;
     flex-shrink: 0;
     position: relative;
