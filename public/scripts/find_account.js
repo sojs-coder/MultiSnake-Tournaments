@@ -29,7 +29,7 @@ function customHandleRes(res){
     }else{
       var user = res.Items[0];
       template = `<div class="result-username">${user.username}</div>
-      <div class="result-elo">${user.elo}</div>
+      <div class="result-elo">${user.elo | "400"}</div>
       <div class="result-age">Born in ${user.yearBorn}</div>
       <button class="connect-button">
           <div class="connect-account">Connect Account</div>
@@ -53,7 +53,9 @@ function customHandleRes(res){
           },
           body: requestBody
         }).then(response => response.json())
-        .then(handleRes)
+        .then((data)=>{
+          handleRes({ ...data, redirect: "/login"})
+        })
         .catch(error => {
           displayNotif(error.message,"red")
           console.error('Error:', error);

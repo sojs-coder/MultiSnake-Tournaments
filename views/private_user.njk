@@ -64,13 +64,12 @@
                             <span class="warning-span">Do not share the join link with anyone. Sharing the link with someone will result in immediate disqualification. Join the game within 1 minute of the game starting. Failure to do so will result in a loss</span>
                     </div>
                 </div> #}
-                {{ tourneys }}
                 {% for t in tourneys %}
                 {% if not t.complete %}
                 <div class="tourney-data">
                     <div class="tourney-name">
                         <span>
-                            <span class="tourney-name-span">{{ t.name }} (Joined)</span>
+                            <a href = "/tourney/{{ t.uid }}" class="tourney-name-span">{{ t.name }} (Joined)</a>
                             {# <span class="tourney-name-span2">(Join)</span> #}
                     </div>
                     <div class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</div>
@@ -86,10 +85,10 @@
                         var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
                         var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
 
-                        var d = document.getElementById("d");
-                        var h = document.getElementById("h");
-                        var m = document.getElementById("m");
-                        var s = document.getElementById("s");
+                        var d = document.getElementById("d{{ loop.index }}");
+                        var h = document.getElementById("h{{ loop.index }}");
+                        var m = document.getElementById("m{{ loop.index }}");
+                        var s = document.getElementById("s{{ loop.index }}");
 
                         d.innerHTML = days;
                         h.innerHTML = hours;
@@ -97,7 +96,43 @@
                         s.innerHTML = seconds;
                     }
                 </script>
-                    <div class="tourney-start">{% if t.ongoing %}Starts in &nbsp;<span id = "d"></span>&nbsp;days,&nbsp;<span id = "h"></span>&nbsp;hours, &nbsp;<span id = "m"></span>&nbsp;minutes, and&nbsp;<span id = "s"></span>&nbsp;seconds{% else %}Round {{ t.round_num }}{% endif %}</div>
+                   <div class="tourney-start">{% if t.ongoing %}Round {{ t.round_num }}{% else %}Starts in&nbsp;<span id = "d{{ loop.index }}"></span>&nbsp;days,&nbsp;<span id = "h{{ loop.index }}"></span>&nbsp;hours, &nbsp;<span id = "m{{ loop.index }}"></span>&nbsp;minutes, and&nbsp;<span id = "s{{ loop.index }}"></span>&nbsp;seconds{% endif %}</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% for t in ableToJoin %}
+                {% if not t.complete %}
+                <div class="tourney-data">
+                    <div class="tourney-name">
+                        <span>
+                            <a href = "/tourney/{{ t.uid }}" class="tourney-name-span">{{ t.name }} (Click to join)</a>
+                            {# <span class="tourney-name-span2">(Join)</span> #}
+                    </div>
+                    <div class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</div>
+                    <script>
+                    setInterval(count, 500);
+                    function count() {
+                        var countDownDate = {{ t.start_at }}
+                        var now = new Date().getTime();
+                        var timeleft = countDownDate - now;
+
+                        var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+                        var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+                        var d = document.getElementById("d{{ loop.index }}");
+                        var h = document.getElementById("h{{ loop.index }}");
+                        var m = document.getElementById("m{{ loop.index }}");
+                        var s = document.getElementById("s{{ loop.index }}");
+
+                        d.innerHTML = days;
+                        h.innerHTML = hours;
+                        m.innerHTML = minutes;
+                        s.innerHTML = seconds;
+                    }
+                </script>
+                    <div class="tourney-start">{% if t.ongoing %}Round {{ t.round_num }}{% else %}Starts in&nbsp;<span id = "d{{ loop.index }}"></span>&nbsp;days,&nbsp;<span id = "h{{ loop.index }}"></span>&nbsp;hours, &nbsp;<span id = "m{{ loop.index }}"></span>&nbsp;minutes, and&nbsp;<span id = "s{{ loop.index }}"></span>&nbsp;seconds{% endif %}</div>
                 </div>
                 {% endif %}
                 {% endfor %}

@@ -154,7 +154,7 @@ function handleRes(response) {
 }
 function redirect(to) {
     setTimeout(() => {
-        window.location.replace(to)
+        window.location.replace(to) 
     }, 750);
 }
 function displayNotif(notifText, color) {

@@ -62,15 +62,26 @@ app.get("/account", async (req, res) => {
         return res.redirect("/login")
     }
     const user = await dbManager.getUser(req.session.user.uid);
+    tManager.putUser(user);
+    var updatedUser = await tManager.getUser(req.session.user.uid);
+    updatedUser = updatedUser[0]
     if(!user) return next();
     user.elo = user.elo || 400;
     var notOngoingTourneys = await tManager.getUnactiveTourneys();
+    var filteredNotOngoingTourneys = notOngoingTourneys.filter(tuid=>{
+        if(updatedUser.tourneys == null || !updatedUser.tourneys) return true;
+        return (updatedUser.tourneys.indexOf(tuid) !== -1)
+    })
+    var nOTourneys = await Promise.all(filteredNotOngoingTourneys.map(t=>{
+        return tManager.getTourney(t.uid);
+    }));
+    console.log(nOTourneys)
     var joinedTourneys = await tManager.getTourneysFromPlayer(req.session.user.uid);
-    var tourneys = await Promise.all(joinedTourneys[0].tourneys.map(t=>{
+    if(!joinedTourneys[0].tourneys) joinedTourneys[0].tourneys = [];
+    var jtourneys = await Promise.all(joinedTourneys[0].tourneys.map(t=>{
         return tManager.getTourney(t);
     }));
-    tManager.putUser(user);
-    res.render("private_user.njk", {...user, tourneys});
+    res.render("private_user.njk", {...user, tourneys: jtourneys, ableToJoin: nOTourneys});
 })
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;

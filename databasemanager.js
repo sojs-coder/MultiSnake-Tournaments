@@ -57,9 +57,21 @@ class TourneyManager {
         }
         return data
     }
-    async getUnactiveTourneys() {
+    async getUnactiveGames() {
         let { data: games, error } = await this.supabase
             .from('games')
+            .select('*')
+            .is('ongoing', false)
+            .is('complete', false)
+        if (error) {
+            console.error(error);
+            return { error: true, message: error.message }
+        };
+        return games;
+    }
+    async getUnactiveTourneys() {
+        let { data: games, error } = await this.supabase
+            .from('tourneys')
             .select('*')
             .is('ongoing', false)
             .is('complete', false)
