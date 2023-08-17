@@ -1,3 +1,4 @@
+// Generate a random name by combining a random start word with a random end word and a random number
 function generateName() {
     var start = [
         'flying',
@@ -24,6 +25,8 @@ function generateName() {
     var ending = start[Math.floor(Math.random() * start.length)] + end[Math.floor(Math.random() * end.length)] + Math.round(Math.random() * 100);
     return ending;
 }
+
+// Pick a random color from a predefined array
 function pickColor() {
     var colors = [
         "red",
@@ -43,30 +46,38 @@ function pickColor() {
     ]
     return colors[Math.floor(Math.random() * colors.length)];
 }
+
+// Return true with a given probability (percentage)
 function oddsOf(percent) {
     let odd = percent / 100;
     return (Math.random() < odd)
 }
+
+// Convert a JSON object to an array of objects with added keys
 function json2array(json) {
     var result = [];
     var keys = Object.keys(json);
     keys.forEach(function (key) {
         var endJSON = json[key];
-        endJSON.key = key
+        endJSON.key = key;
         result.push(endJSON);
     });
     return result;
 }
+
+// Sum arrays element-wise
 function sumArrays(...arrays) {
     const n = arrays.reduce((max, xs) => Math.max(max, xs.length), 0);
     const result = Array.from({ length: n });
     return result.map((_, i) => arrays.map(xs => xs[i] || 0).reduce((sum, x) => sum + x, 0));
 }
+
+// Calculate Manhattan distance between two points
 function manhattanDistance(point1, point2) {
     return Math.abs(point1[0] - point2[0]) + Math.abs(point1[1] - point2[1]);
 }
 
-
+// Get a direction vector based on a direction string
 function directionVector(direction) {
     switch (direction) {
         case "up":
@@ -81,6 +92,8 @@ function directionVector(direction) {
             throw new Error(`Invalid direction: ${direction}`);
     }
 }
+
+// Generate a random API key
 function generateAPIKey() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let apiKey = '';
@@ -92,9 +105,13 @@ function generateAPIKey() {
 
     return apiKey;
 }
+
+// Generate a random number with a given number of digits
 function rand(digits) {
     return Math.floor(Math.random() * parseInt('8' + '9'.repeat(digits - 1)) + parseInt('1' + '0'.repeat(digits - 1)));
 }
+
+// Check if an object is empty
 function isEmptyObject(obj) {
     for (var key in obj) {
         if (obj.hasOwnProperty(key))
@@ -103,17 +120,12 @@ function isEmptyObject(obj) {
     return true;
 }
 
-// thanks https://bost.ocks.org/mike/shuffle/
+// Shuffle an array using the Fisher-Yates shuffle algorithm
 function shuffle(array) {
     var m = array.length, t, i;
 
-    // While there remain elements to shuffle…
     while (m) {
-
-        // Pick a remaining element…
         i = Math.floor(Math.random() * m--);
-
-        // And swap it with the current element.
         t = array[m];
         array[m] = array[i];
         array[i] = t;
@@ -121,14 +133,8 @@ function shuffle(array) {
 
     return array;
 }
-function calculateDirectionVector(p1, p2) {
-    // Calculate the components of the direction vector
-    const dx = p2[0] - p1[0];
-    const dy = p2[1] - p1[1];
 
-    // Return the direction vector as an array [dx, dy]
-    return [dx, dy];
-}
+// Calculate the Elo rating for a match
 const elo = ([...ratings], kFactor = 32, selfRating) => {
     const [a, b] = ratings;
     const expectedScore = (self, opponent) => 1 / (1 + 10 ** ((opponent - self) / 400));
@@ -146,17 +152,51 @@ const elo = ([...ratings], kFactor = 32, selfRating) => {
     }
     return ratings;
 };
+
+// Handle a response object by redirecting or displaying a notification
 function handleRes(response) {
     if (response.redirect) {
         redirect(response.redirect);
     }
     displayNotif(response.message, response.color);
 }
+
+// Redirect to a given URL after a delay
 function redirect(to) {
     setTimeout(() => {
-        window.location.replace(to) 
+        window.location.replace(to)
     }, 750);
 }
+
+// Convert a UNIX timestamp to a human-readable date string
+function convertToHuman(timestamp) {
+    var dateObj = new Date(timestamp);
+    var format = "MM/DD/YY @ HH:MM";
+
+    var month = dateObj.getMonth() + 1;
+    var day = dateObj.getDate();
+    var year = dateObj.getFullYear();
+    var hours = dateObj.getHours();
+    var minutes = dateObj.getMinutes();
+
+    if (hours > 12) {
+        hours -= 12;
+    }
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    }
+
+    var dateString = format
+        .replace("MM", month)
+        .replace("DD", day)
+        .replace("YY", year)
+        .replace("HH", hours)
+        .replace("MM", minutes);
+
+    return dateString;
+}
+
+// Display a notification message with optional color
 function displayNotif(notifText, color) {
     const notification = document.createElement("div");
     notification.innerHTML = notifText || "Something happened...";
@@ -168,7 +208,6 @@ function displayNotif(notifText, color) {
     }
     document.getElementById("notif-box").appendChild(notification);
 
-    // Automatically remove the notification after 3 seconds
     setTimeout(function () {
         document.getElementById("notif-box").removeChild(notification);
     }, 3000);

@@ -69,6 +69,32 @@ function guid() {
 function manhattanDistance(point1, point2) {
     return Math.abs(point1[0] - point2[0]) + Math.abs(point1[1] - point2[1]);
 }
+// Define a custom comparator function for sorting timestamps
+function sortByTime(game1, game2) {
+    const currentTime = new Date().getTime();
+    var a = game1.start_at;
+    var b = game2.start_at;
+    // Calculate the absolute differences between timestamps and the current time
+    const diffA = Math.abs(a - currentTime);
+    const diffB = Math.abs(b - currentTime);
+
+    // If both timestamps are in the future, sort by the difference in ascending order
+    if (a > currentTime && b > currentTime) {
+        return diffA - diffB;
+    }
+
+    // If only one of the timestamps is in the future, prioritize it
+    if (a > currentTime) {
+        return -1;
+    }
+    if (b > currentTime) {
+        return 1;
+    }
+
+    // If both timestamps are in the past, sort by the difference in ascending order
+    return diffA - diffB;
+}
+
 
 
 function directionVector(direction) {
@@ -157,6 +183,7 @@ module.exports = {
     oddsOf,
     json2array,
     sumArrays,
+    sortByTime,
     guid,
     pickColor,
     manhattanDistance,

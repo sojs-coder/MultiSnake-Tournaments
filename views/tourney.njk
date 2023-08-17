@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <script src = "/scripts/helpers.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/styles/tourney.css">
+        <link rel="stylesheet" href="/styles/universal.css">
+
+        <title>MultiSnake Tournaments</title>
+    </head>
+    <body>
+        <div class="tourney-games">
+            <div class="navbar">
+                <div class="left-link-group">
+                    <div class="link">
+                        <a href = "/" class="link2">Home</a>
+                    </div>
+                    <div class="link">
+                        <a class="link2">Discord</a>
+                    </div>
+                </div>
+                <div class="right-link-group">
+                    <div class="link">
+                        <a class="link2">All Games</a>
+                    </div>
+                    <div class="link">
+                        <a href = "/leaderboard" class="link2">Leaderboard</a>
+                    </div>
+                    <div class="link">
+                        <a href = "/signup" class="link2">Sign up</a>
+                    </div>
+                    <div class="link">
+                        <a href = "/login" class="link2">Log in</a>
+                    </div>
+                </div>
+            </div>
+            <div class="main">
+                <div class="tourney-name">{{ name }}</div>
+                <div class="bottom-row">
+                    <div class="running-games">
+                        <div class="game-round">Games (Round {{ round_num }})</div>
+                        <div class="game-column">
+                            {% for game in games %}
+                                <div class="game-box">
+                                    <div class="title-part">
+                                        <div class="game-number">Game #{{ game.game_number }}</div>
+                                        <div class="game-flags">
+                                            {% if game.ongoing %}(ONGOING){% elif game.complete %}(COMPLETE){% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="game-time">
+                                        <script>
+                                            document.write(convertToHuman({{ game.start_at }}))
+                                        </script>
+                                        {% if game.ongoing %} |&nbsp;<a href = "{{ game.link }}&spectate=true">Click to watch</a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="game-uid">{{ game.uid }}</div>
+                                    {% for player in game.players %}
+                                        <a href = "/account/{{ player.uid }}" class="name-24">
+                                            {% if player.username %}{{ player.username }}
+                                            {% else %}{{ player.uid }}
+                                            {% endif %}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                            <div class="view-all-games-link">View All Games</div>
+                        </div>
+                    </div>
+                    <div class="players">
+                        <div class="player-list">
+                            <div class="standing-title">Standing</div>
+                            <div class="standing">
+                                {% for player in live_players %}
+                                    <a href = "/account/{{ player.uid }}" class="name-24">
+                                        {% if player.username %}{{ player.username }}
+                                        {% else %}{{ player.uid }}
+                                        {% endif %}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            <div class="eliminated-title">Eliminated</div>
+                            <div class="eliminated">
+                                {% for player in ranked_players %}
+                                    <a href = "/account/{{ player.uid }}" class="name-242">
+                                        {% if player.username %}{{ player.username }}
+                                        {% else %}{{ player.uid }}
+                                        {% endif %}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="notif-box"></div>
+    </body>
+</html>

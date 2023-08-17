@@ -2,9 +2,8 @@ const express = require('express');
 const http = require('http');
 const nunjucks = require("nunjucks");
 const session = require('express-session');
-
+const { sortByTime } = require("./helpers.js")
 const { dbManager, tManager } = require("./databasemanager");
-const { tmpdir } = require('os');
 const app = express();
 const server = http.createServer(app);
 app.use(express.json());
@@ -89,6 +88,38 @@ app.get("/account", async (req, res) => {
         return tManager.getTourney(t);
     }));
     res.render("private_user.njk", {...user, tourneys: jtourneys, ableToJoin: nOTourneys});
+});
+app.get("/tourney/:uid",async (req,res, next)=>{
+    var tourney = await tManager.getTourney(req.params.uid);
+    if(!tourney) return next()
+    if(tourney.error) return next();
+    var games = await tManager.getGamesFromTourney(req.params.uid);
+    games = games.sort(sortByTime);
+
+    tourney.players = await Promise.all(tourney.players.map(async player=>{
+        user = await tManager.getUser(player);
+        return {...user[0], uid: player }
+    }));
+    console.log(tourney.players)
+    games = games.map(game=>{
+        game.players = game.players.map(playerUID=>{
+            var player = tourney.players.filter(tourneyMatch => tourneyMatch.uid == playerUID);
+            player = player[0] || null;
+
+            return player;
+        });
+        return game;
+    })
+    tourney.live_players = tourney.live_players.map(livePlayerUid =>{
+        var player = tourney.players.filter(tourneyMatch => tourneyMatch.uid == livePlayerUid);
+        return player[0] || null
+    });
+    tourney.ranked_players = tourney.ranked_players || []
+    tourney.ranked_players = tourney.ranked_players.map(livePlayerUid =>{
+        var player = tourney.players.filter(tourneyMatch => tourneyMatch.uid == livePlayerUid);
+        return player[0] || null
+    })
+    res.render("tourney.njk", { ...tourney, games})
 })
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
