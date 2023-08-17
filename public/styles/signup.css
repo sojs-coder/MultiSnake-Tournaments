@@ -148,3 +148,21 @@
   align-items: center;
   justify-content: center;
 }
+
+.dont-have-account-blurb {
+  text-align: center;
+  font: 400 18px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dont-have-account-blurb-span {
+  color: #ffffff;
+  font: 400 18px "Inter", sans-serif;
+}
+.dont-have-account-blurb-span2 {
+  color: #add8e6;
+  font: 400 18px "Inter", sans-serif;
+  text-decoration: underline;
+}

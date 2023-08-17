@@ -1,6 +1,6 @@
 function handleSubmit(){
     var emailInput = document.querySelector(".username");
-
+    if(emailInput.value.trim().length <= 0) {displayNotif("Email is required to connect your multisnake account"); return;}
     const email = emailInput.value;
 
 
@@ -38,6 +38,7 @@ function customHandleRes(res){
     document.querySelector(".results").innerHTML = template;
     document.querySelector(".connect-account").addEventListener("click",()=>{
       var emailInput = document.querySelector(".username");
+      if(emailInput.value.trim().length <= 0) {displayNotif("Email is required to connect your multisnake account"); return;}
 
       const email = emailInput.value;
   
