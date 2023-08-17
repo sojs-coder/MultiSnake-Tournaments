@@ -199,7 +199,10 @@ function getTimeDifference(timestamp) {
   const now = Date.now();
   const difference = timestamp - now;
 
-  // Calculate time differences in various units
+  if (difference <= 0) {
+    return "Date passed";
+  }
+
   const seconds = Math.floor(difference / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
@@ -207,7 +210,6 @@ function getTimeDifference(timestamp) {
   const weeks = Math.floor(days / 7);
   const months = Math.floor(days / 30);
 
-  // Return appropriate message based on the time difference
   if (months >= 1) {
     return `In ${months} months`;
   } else if (weeks >= 1) {
@@ -222,6 +224,7 @@ function getTimeDifference(timestamp) {
     return `In ${seconds} seconds`;
   }
 }
+
 
 // Display a notification message with optional color
 function displayNotif(notifText, color) {
