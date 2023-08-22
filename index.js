@@ -6,7 +6,11 @@ const { sortByTime } = require("./helpers.js")
 const { dbManager, tManager } = require("./databasemanager");
 const app = express();
 const server = http.createServer(app);
-app.use(express.json());
+const stripe = require("stripe")(process.env.STRIPE_SECRET)
+const bodyParser = require('body-parser');
+const endpointSecret = process.env.SIGN_SECRET;
+
+
 app.use(express.static(
     "./public"
 ));
@@ -100,7 +104,6 @@ app.get("/tourney/:uid",async (req,res, next)=>{
         user = await tManager.getUser(player);
         return {...user[0], uid: player }
     }));
-    console.log(tourney.players)
     games = games.map(game=>{
         game.players = game.players.map(playerUID=>{
             var player = tourney.players.filter(tourneyMatch => tourneyMatch.uid == playerUID);
@@ -121,7 +124,7 @@ app.get("/tourney/:uid",async (req,res, next)=>{
     })
     res.render("tourney.njk", { ...tourney, games})
 })
-app.post('/login', async (req, res) => {
+app.post('/login',express.json(), async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -149,7 +152,7 @@ app.post('/login', async (req, res) => {
         return res.status(500).json({ message: err.message, color: "red" });
     }
 });
-app.post("/find_account", async (req, res) => {
+app.post("/find_account", express.json(),async (req, res) => {
     try {
         var { email } = req.body
         var user = await dbManager.getDataByEmail(email);
@@ -162,7 +165,45 @@ app.post("/find_account", async (req, res) => {
         return res.status(500).json({ code: 500, message: err.message, error: err, color: "red" })
     }
 });
-app.post("/connect_account", async (req, res) =>{
+app.post('/stripe_webhook', bodyParser.raw({type: 'application/json'}), async (request, response) => {
+    var costHash = {
+      "price_1NgCNCD26sImJXmk6ZTtOS77":5
+    }
+    
+    const fulfillOrder = (lineItems,email) => {
+      var productID = lineItems.data[0].price.id;
+      return { payed: costHash[productID], email};
+    }
+    const payload = request.body;
+    const sig = request.headers['stripe-signature'];
+  
+    let event;
+  
+    try {
+      event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+    } catch (err) {
+        console.log(err)
+      return response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+  
+    // Handle the checkout.session.completed event
+    if (event.type === 'checkout.session.completed') {
+      // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
+      const expanded = await stripe.checkout.sessions.retrieve(
+        event.data.object.id,
+        {
+          expand: ['line_items']
+        }
+      );
+      const email = expanded.customer_details.email;
+      const lineItems = expanded.line_items;
+      // Fulfill the purchase...
+      fulfillOrder(lineItems,email);
+    }
+  
+    response.status(200).end();
+  });
+app.post("/connect_account", express.json(),async (req, res) =>{
     try {
         var { email } = req.body
         var user = await dbManager.getDataByEmail(email);
