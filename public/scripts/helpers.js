@@ -195,6 +195,36 @@ function convertToHuman(timestamp) {
 
     return dateString;
 }
+function getTimeDifference(timestamp) {
+  const now = Date.now();
+  const difference = timestamp - now;
+
+  if (difference <= 0) {
+    return "Date passed";
+  }
+
+  const seconds = Math.floor(difference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const weeks = Math.floor(days / 7);
+  const months = Math.floor(days / 30);
+
+  if (months >= 1) {
+    return `In ${months} months`;
+  } else if (weeks >= 1) {
+    return `In ${weeks} weeks`;
+  } else if (days >= 1) {
+    return `In ${days} days`;
+  } else if (hours >= 1) {
+    return `In ${hours} hours`;
+  } else if (minutes >= 1) {
+    return `In ${minutes} minutes`;
+  } else {
+    return `In ${seconds} seconds`;
+  }
+}
+
 
 // Display a notification message with optional color
 function displayNotif(notifText, color) {
