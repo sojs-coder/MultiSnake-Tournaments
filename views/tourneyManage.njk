@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <script src = "/scripts/helpers.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/styles/universal.css">
+
+        <title>MultiSnake Tournaments</title>
+    </head>
+    <body>
+        <h1>Managment for {{ name }} ({{ uid }})</h1>
+        <ul>
+            <li>UID: {{ uid }}</li>
+            <li>Starts At: <script>
+                    document.write(convertToHuman({{ start_at }}))
+                </script>
+            </li>
+            <li>Complete/Ongoing: {{ complete }}/{{ ongoing }}</li>
+            <li>Prize: {{ prize }} ({{ entry_fee }} to enter)</li>
+            <li>Max Games Per Day: {{ max_games_per_day }} ({{ game_hour_diff }} hours in between each game)</li>
+            <li>On round: {{ round_num }} ({{ on_round }})
+            <li>Players:
+                <ol>
+                    {% for player in players %}
+                        <li>
+                            <a href = "/account/{{player}}">{{ player }}</a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </li>
+            <li>Live Players:
+                <ol>
+                    {% for player in live_players %}
+                        <li>
+                            <a href = "/account/{{player}}">{{ player }}</a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </li>
+            <li>Live Players:
+                <ol>
+                    {% for player in live_players %}
+                        <li>
+                            <a href = "/account/{{player}}">{{ player }}</a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </li>
+            <li>Ranked Players:
+                <ol>
+                    {% for player in ranked_players %}
+                        <li>
+                            <a href = "/account/{{player}}">{{ player }}</a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </li>
+            <li>Winner: {{ winner }}</li>
+
+            <li>Round: {{ round_num }}</li>
+
+        </body>
+    </html>

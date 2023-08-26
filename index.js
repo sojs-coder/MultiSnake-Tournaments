@@ -96,7 +96,13 @@ app.get("/account", async (req, res) => {
 });
 app.get("/join/:tourneyUID",(req,res)=>{
     res.redirect("/checkout/"+req.params.tourneyUID)
-})
+});
+app.get("/manage/:tourneyUID",async (req,res,next)=>{
+    var tourney = tManager.getTourney(req.params.tourneyUID);
+    if(!tourney || tourney.error) return next();
+
+    res.render("tourneyManage.njk", { ...tourney })
+});
 app.get("/checkout/:tourneyUID", async (req, res, next) => {
     if (!req.session.user) return res.redirect("/login?goto=/checkout/"+req.params.tourneyUID)
     var tourney = await tManager.getTourney(req.params.tourneyUID);
