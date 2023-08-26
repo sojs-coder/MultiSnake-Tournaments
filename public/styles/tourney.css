@@ -32,8 +32,9 @@
   font: 400 64px "Inter", sans-serif;
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
+  flex-direction: column;
 }
 .bottom-row {
   display: flex;
@@ -137,6 +138,15 @@
   color: #5ce6aa;
   text-align: left;
   font: 400 24px "Inter", sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.name-36 {
+  color: #008000;
+  text-align: left;
+  font: 400 36px "Inter", sans-serif;
   position: relative;
   display: flex;
   align-items: center;

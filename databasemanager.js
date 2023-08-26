@@ -494,6 +494,37 @@ class DBManager {
             console.log(err);
         }
     }
+    async sendPaymentFailed(email, { uid, name }) {
+        const params = {
+            Destination: {
+                ToAddresses: [email]
+            },
+            Message: {
+                Body: {
+                    Html: {
+                        Charset: "UTF-8",
+                        Data: `<h1>Hello ${email}</h1><p>You have recently signed up for the tournament ${name} (uid ${uid}). Sadly, your email does not seem to be associated with a user in our database, and we failed to you sign you up. If you feel this is a mistake, email me directly at "matfuller703@gmail.com".</p><p>If you have not created a multisnake account and linked it to MultiSnake Tournaments, you can <a href = "https://multisnake.xyz/signup>create an account here</a>, and link it <a href = "https://tournaments.multisnake.xyz/signup">here</a></p><p>Thank you for understanding, and you will be refunded in full, best of regards, SoJS</p>`
+                    },
+                    Text: {
+                        Charset: "UTF-8",
+                        Data: `Hello ${email}. \n You have recently signed up for the tournament ${name} (uid ${uid}). Sadly, your email does not seem to be associated with a user in our database, and we failed to sign you up. If you feel this is a mistake, email me directly at "matfuller703@gmail.com". If you have not created a multisnake account and linked it to MultiSnake Tournaments, you can do that by going to multisnake.xyz and clicking "signup", and then linking it to multisnake tournaments by going to tournaments.multisnake.xyz and clicking "signup" there as well. \n Thank you for your understanding, and you will be refunded in full, best of regards, SoJS`
+                    }
+                },
+                Subject: {
+                    Charset: "UTF-8",
+                    Data: "[Multisnake Tournaments] Failed to sign up for "+name
+                }
+            },
+            Source: "sojscoder@gmail.com",
+            ReplyToAddresses: [
+                "sojscoder@gmail.com"
+            ]
+        };
+        var sendPromise = new AWS.SES({
+            apiVersion: '2010-12-01'
+        }).sendEmail(params).promise();
+        sendPromise.then(function (data) { }).catch(function (err) { console.error(err, err.stack); });
+    }
 }
 
 

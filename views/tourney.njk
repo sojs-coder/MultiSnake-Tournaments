@@ -7,7 +7,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/styles/tourney.css">
         <link rel="stylesheet" href="/styles/universal.css">
-
         <title>MultiSnake Tournaments</title>
     </head>
     <body>
@@ -37,7 +36,11 @@
                 </div>
             </div>
             <div class="main">
-                <div class="tourney-name">{{ name }}</div>
+                <div class="tourney-name">
+                    {{ name }} {% if playerHasJoined %}(Joined){% else %}<a href = "/join/{{ uid }}" class = "name-36">Join this tourney</a>{% endif %}
+                    <p class = "game-uid">{{ uid }}</p>
+                </div>
+                
                 <div class="bottom-row">
                     <div class="running-games">
                         <div class="game-round">Games (Round {{ round_num }})</div>
@@ -67,7 +70,6 @@
                                     {% endfor %}
                                 </div>
                             {% endfor %}
-                            <div class="view-all-games-link">View All Games</div>
                         </div>
                     </div>
                     <div class="players">
