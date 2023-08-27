@@ -304,12 +304,21 @@ class TourneyManager {
     }
     async addPlayer(tourneyUID, playerUID) {
         var { players, live_players, prize, ongoing, complete, entry_fee } = await this.getTourney(tourneyUID);
+        var player = await this.getUser(playerUID);
+        
+        if (!player[0] || player.error) return { error: true, message: "Player does not exist" }
+        player = player[0]
         if (players) {
             if (!ongoing && !complete) {
                 prize += entry_fee;
                 if (players.indexOf(playerUID) !== -1) return { error: true, message: "Player already in the tourney" }
                 players.push(playerUID);
                 live_players.push(playerUID);
+                player.tourneys.push(tourneyUID);
+                await this.supabase
+                    .from("users")
+                    .update({ tourneys: player.tourneys })
+                    .eq("uid", playerUID)
                 await this.supabase
                     .from('tourneys')
                     .update({ players, live_players, prize })
@@ -318,7 +327,7 @@ class TourneyManager {
                 return { error: true, message: "Tournament has started" }
             }
         } else {
-            return { error: true, message: "tourney does not exist" };
+            return { error: true, message: "Tourney does not exist" };
         }
     }
     async getActiveTourneys() {
@@ -386,7 +395,9 @@ class TourneyManager {
             max_games_per_day,
             game_hour_diff,
             round_num: 0,
-            on_round: null
+            on_round: null,
+            live_players: [],
+            ranked_players: [],
         }
         const { data, error } = await this.supabase
             .from('tourneys')
@@ -512,7 +523,7 @@ class DBManager {
                 },
                 Subject: {
                     Charset: "UTF-8",
-                    Data: "[Multisnake Tournaments] Failed to sign up for "+name
+                    Data: "[Multisnake Tournaments] Failed to sign up for " + name
                 }
             },
             Source: "sojscoder@gmail.com",

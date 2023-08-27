@@ -37,7 +37,7 @@
             </div>
             <div class="main">
                 <div class="tourney-name">
-                    {{ name }} {% if playerHasJoined %}(Joined){% else %}<a href = "/join/{{ uid }}" class = "name-36">Join this tourney</a>{% endif %}
+                    {{ name }}- ${{ prize }} Prize{% if playerHasJoined %}(Joined){% else %}<a href = "/join/{{ uid }}" class = "name-36">Join this tourney (${{ entry_fee }})</a>{% endif %}
                     <p class = "game-uid">{{ uid }}</p>
                 </div>
                 

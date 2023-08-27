@@ -94,17 +94,22 @@ app.get("/account", async (req, res) => {
     }));
     res.render("private_user.njk", { ...user, tourneys: jtourneys, ableToJoin: nOTourneys });
 });
-app.get("/join/:tourneyUID",(req,res)=>{
-    res.redirect("/checkout/"+req.params.tourneyUID)
+app.get("/join/:tourneyUID", (req, res) => {
+    res.redirect("/checkout/" + req.params.tourneyUID)
 });
-app.get("/manage/:tourneyUID",async (req,res,next)=>{
-    var tourney = tManager.getTourney(req.params.tourneyUID);
-    if(!tourney || tourney.error) return next();
-
+app.get("/manage", async (req, res) => {
+    var activesTourneys = await tManager.getActiveTourneys();
+    var completeTourneys = await tManager.getCompleteTourneys();
+    var unactiveTourneys = await tManager.getUnactiveTourneys()
+    res.render("manage.njk", { activesTourneys, completeTourneys, unactiveTourneys })
+});
+app.get("/manage/:tourneyUID", async (req, res, next) => {
+    var tourney = await tManager.getTourney(req.params.tourneyUID);
+    if (!tourney || tourney.error) return next();
     res.render("tourneyManage.njk", { ...tourney })
 });
 app.get("/checkout/:tourneyUID", async (req, res, next) => {
-    if (!req.session.user) return res.redirect("/login?goto=/checkout/"+req.params.tourneyUID)
+    if (!req.session.user) return res.redirect("/login?goto=/checkout/" + req.params.tourneyUID)
     var tourney = await tManager.getTourney(req.params.tourneyUID);
     if (!tourney || tourney.error) return next();
 
@@ -142,11 +147,22 @@ app.get("/tourney/:uid", async (req, res, next) => {
         return player[0] || null
     })
     var playerHasJoined = false;
-    if(req.session.user) {
+    if (req.session.user) {
         var user = await tManager.getUser(req.session.user.uid);
-        playerHasJoined = (user.tourneys.indexOf(tourney.uid) !== -1)
+        playerHasJoined = (user[0].tourneys.indexOf(tourney.uid) !== -1);
     }
     res.render("tourney.njk", { ...tourney, games, playerHasJoined })
+});
+app.post("/newTourney", express.json(), async (req, res) => {
+    try {
+        var { entry_fee, start_at, max_games_per_day, game_hour_diff, friendlyName } = req.body;
+        var tres = await tManager.createTourney(entry_fee, start_at, max_games_per_day, game_hour_diff, friendlyName);
+        res.status(200).send(tres);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ error: true, message: err.message })
+    }
+
 })
 app.post('/login', express.json(), async (req, res) => {
     const { email, password } = req.body;
@@ -170,7 +186,7 @@ app.post('/login', express.json(), async (req, res) => {
         req.session.user = user;
 
         // Return success response
-        res.status(200).json({ message: 'Login successful', color: "green", redirect: req.session.goto || "/account"});
+        res.status(200).json({ message: 'Login successful', color: "green", redirect: req.session.goto || "/account" });
         delete req.session.goto;
     } catch (err) {
         console.error(err);
@@ -232,8 +248,6 @@ app.post('/stripe_webhook', bodyParser.raw({ type: 'application/json' }), async 
     if (event.type == "payment_intent.succeeded") {
         var email = "";
         if (event && event.data && event.data.object && event.data.object.receipt_email && event.data.object.metadata && event.data.object.metadata.tourneyUID) {
-            console.log("EMAIL", event.data.object.receipt_email);
-            console.log("TOURNEY", event.data.object.metadata.tourneyUID);
             var player = await tManager.getUserByEmail(event.data.object.receipt_email);
             var tourney = await tManager.getTourney(event.data.object.metadata.tourneyUID)
             player = player[0]
@@ -248,12 +262,13 @@ app.post('/stripe_webhook', bodyParser.raw({ type: 'application/json' }), async 
                 return response.status(400).send("The tourney does not exist for some odd reason...")
             }
 
-            tManager.addPlayer(event.data.object.metadata.tourneyUID,player.uid);
+            var tres = await tManager.addPlayer(event.data.object.metadata.tourneyUID, player.uid);
+            return response.status(200).send(tres)
         }
     }
     response.status(200).end();
 });
-app.post("/getUser",express.json(), async (req,res)=>{
+app.post("/getUser", express.json(), async (req, res) => {
     var user = await tManager.getUserByEmail(req.body.email);
     user = user[0];
     res.status(200).json({ user })

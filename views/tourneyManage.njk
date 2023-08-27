@@ -5,7 +5,6 @@
         <script src = "/scripts/helpers.js"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/styles/universal.css">
 
         <title>MultiSnake Tournaments</title>
     </head>
@@ -21,6 +20,7 @@
             <li>Prize: {{ prize }} ({{ entry_fee }} to enter)</li>
             <li>Max Games Per Day: {{ max_games_per_day }} ({{ game_hour_diff }} hours in between each game)</li>
             <li>On round: {{ round_num }} ({{ on_round }})
+            
             <li>Players:
                 <ol>
                     {% for player in players %}
@@ -58,8 +58,5 @@
                 </ol>
             </li>
             <li>Winner: {{ winner }}</li>
-
-            <li>Round: {{ round_num }}</li>
-
         </body>
     </html>
