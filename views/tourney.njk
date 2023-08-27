@@ -37,40 +37,72 @@
             </div>
             <div class="main">
                 <div class="tourney-name">
-                    {{ name }}- ${{ prize }} Prize{% if playerHasJoined %}(Joined){% else %}<a href = "/join/{{ uid }}" class = "name-36">Join this tourney (${{ entry_fee }})</a>{% endif %}
+                    {{ name }}- ${{ prize }} Prize {% if playerHasJoined %}(Joined){% else %}
+                        <a href = "/join/{{ uid }}" class = "name-36">Join this tourney (${{ entry_fee }})</a>
+                    {% endif %}
                     <p class = "game-uid">{{ uid }}</p>
                 </div>
-                
+
                 <div class="bottom-row">
                     <div class="running-games">
-                        <div class="game-round">Games (Round {{ round_num }})</div>
-                        <div class="game-column">
-                            {% for game in games %}
-                                <div class="game-box">
-                                    <div class="title-part">
-                                        <div class="game-number">Game #{{ game.game_number }}</div>
-                                        <div class="game-flags">
-                                            {% if game.ongoing %}(ONGOING){% elif game.complete %}(COMPLETE){% endif %}
+                        {% if ongoing %}
+                            <div class="game-round">Games (Round {{ round_num }})</div>
+                            <div class="game-column">
+                                {% for game in games %}
+                                    <div class="game-box">
+                                        <div class="title-part">
+                                            <div class="game-number">Game #{{ game.game_number }}</div>
+                                            <div class="game-flags">
+                                                {% if game.ongoing %}(ONGOING){% elif game.complete %}(COMPLETE){% endif %}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="game-time">
-                                        <script>
-                                            document.write(convertToHuman({{ game.start_at }}))
-                                        </script>
-                                        {% if game.ongoing %} |&nbsp;<a href = "{{ game.link }}&spectate=true">Click to watch</a>
-                                        {% endif %}
-                                    </div>
-                                    <div class="game-uid">{{ game.uid }}</div>
-                                    {% for player in game.players %}
-                                        <a href = "/account/{{ player.uid }}" class="name-24">
-                                            {% if player.username %}{{ player.username }}
-                                            {% else %}{{ player.uid }}
+                                        <div class="game-time">
+                                            <script>
+                                                document.write(convertToHuman({{ game.start_at }}))
+                                            </script>
+                                            {% if game.ongoing %} |&nbsp;<a href = "{{ game.link }}&spectate=true">Click to watch</a>
                                             {% endif %}
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
-                        </div>
+                                        </div>
+                                        <div class="game-uid">{{ game.uid }}</div>
+                                        {% for player in game.players %}
+                                            <a href = "/account/{{ player.uid }}" class="name-24">
+                                                {% if player.username %}{{ player.username }} ({{ player.elo }})
+                                            {% else %}{{ player.uid }}
+                                                {% endif %}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="game-round">Round 1 games will be released in</div>
+                            <script>
+                                setInterval(count, 500);
+                                function count() {
+                                    var countDownDate = {{ start_at }}
+                                    var now = new Date().getTime();
+                                    var timeleft = countDownDate - now;
+
+                                    var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+                                    var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+                                    var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+                                    var d = document.getElementById("d");
+                                    var h = document.getElementById("h");
+                                    var m = document.getElementById("m");
+                                    var s = document.getElementById("s");
+
+                                    d.innerHTML = days;
+                                    h.innerHTML = hours;
+                                    m.innerHTML = minutes;
+                                    s.innerHTML = seconds;
+                                }
+                            </script>
+                            <div class="game-time">
+                                <span id = "d"></span>&nbsp;days,&nbsp;<span id = "h"></span>&nbsp;hours, &nbsp;<span id = "m"></span>&nbsp;minutes, &nbsp;<span id = "s"></span>&nbsp;seconds
+                             </div>
+                        {% endif %}
                     </div>
                     <div class="players">
                         <div class="player-list">
@@ -78,7 +110,7 @@
                             <div class="standing">
                                 {% for player in live_players %}
                                     <a href = "/account/{{ player.uid }}" class="name-24">
-                                        {% if player.username %}{{ player.username }}
+                                        {% if player.username %}{{ player.username }} ({{ player.elo }})
                                         {% else %}{{ player.uid }}
                                         {% endif %}
                                     </a>
@@ -88,7 +120,7 @@
                             <div class="eliminated">
                                 {% for player in ranked_players %}
                                     <a href = "/account/{{ player.uid }}" class="name-242">
-                                        {% if player.username %}{{ player.username }}
+                                        {% if player.username %}{{ player.username }} ({{ player.elo }})
                                         {% else %}{{ player.uid }}
                                         {% endif %}
                                     </a>
