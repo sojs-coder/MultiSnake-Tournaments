@@ -66,8 +66,10 @@
                                         <div class="game-uid">{{ game.uid }}</div>
                                         {% for player in game.players %}
                                             <a href = "/account/{{ player.uid }}" class="name-24">
-                                                {% if player.username %}{{ player.username }} ({{ player.elo }})
-                                            {% else %}{{ player.uid }}
+                                                {% if player.username %}
+                                                    {{ player.username }} ({{ player.elo }})
+                                                {% else %}
+                                                    {{ player.uid }}
                                                 {% endif %}
                                             </a>
                                         {% endfor %}

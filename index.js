@@ -163,6 +163,16 @@ app.post("/newTourney", express.json(), async (req, res) => {
         res.status(500).send({ error: true, message: err.message })
     }
 
+});
+app.post("/newRound", express.json(), async (req,res)=>{
+    var { start_at, uid } = req.body;
+    const tourney = await tManager.getTourney(uid);
+    if(!tourney || tourney.error) return res.status(500).send({ error: true, message: "Tourney UID malformed or does not exist"})
+    if(!start_at) return res.status(500).send({ error: true, message: "No start time provided"});
+    // async createRound({ uid, start_at }) {
+    var tres = await tManager.createRound({ start_at, tourney});
+    if(!tres || tres.error) return res.status(500).send({ error: true, message: (tres) ? tres.message || "Something went wrong..." : "Something went wrong..."})
+    return res.status(200).send({ data: tres })
 })
 app.post('/login', express.json(), async (req, res) => {
     const { email, password } = req.body;

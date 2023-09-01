@@ -191,8 +191,11 @@ class TourneyManager {
         };
         return live_players[0].live_players;
     }
-    async startTournament(uid) {
-        var { live_players: stillIn, start_at, max_games_per_day, game_hour_diff, round_num } = await this.getTourney(uid);
+    async createRound({  start_at, tourney }) {
+        var { uid, live_players: stillIn, start_at: tStart_at, max_games_day, game_hour_diff, round_num } = tourney
+        var games = await this.getGamesFromTourney(uid);
+        if(!games || games.error) return games;
+        var game_number = games.length;
         stillIn = await Promise.all(stillIn.map(async (puid) => {
             return dbManager.getUser(puid)
         }));
@@ -207,64 +210,74 @@ class TourneyManager {
         stillIn.sort((a, b) => {
             return a.elo - b.elo
         });
+
         var groups = this.group(stillIn, 4);
-        // https://www.unixtimestamp.com/
-        var games = await this.createRound(uid, groups, start_at, max_games_per_day, game_hour_diff, round_num + 1);
-        var { data, error } = this.supabase
-            .from("tourneys")
-            .update({ ongoing: true })
-            .eq("uid", uid)
-    }
-    async createRound(tourney, groups, game_start, max_games_day, gameHourDiff, round_num) {
+        if (round_num == 0) {
+            var { data, error } = await this.supabase
+                .from("tourneys")
+                .update({ ongoing: true })
+                .eq("uid", uid)
+            if (error) return { error: true, error: error.message }
+        }
+
         var roundUID = guid();
-        var currentTime = game_start;
+        var currentTime = start_at;
         var gamesToday = 0;
         var add24Hours = (t) => t + (1000 * 60 * 60 * 24);
         var addXHours = (t, x) => t + (1000 * 60 * 60 * x);
+
         var games = groups.map(players => {
-            players = players.map(p => p.uid)
+            players = players.map(p => p.uid);
             var game = {
                 uid: guid(),
                 winner: null,
                 start_at: currentTime,
                 complete: false,
-                tourney,
+                tourney: uid,
                 ongoing: false,
                 players,
                 link: `https://multisnake.xyz/play/location_${guid()}?type=tourney`,
-                round: roundUID
+                round: roundUID,
+                game_number: ++game_number
             }
             gamesToday++;
-            currentTime = addXHours(currentTime, gameHourDiff);
+            currentTime = addXHours(currentTime, game_hour_diff);
             if (gamesToday >= max_games_day) {
-                currentTime = add24Hours(game_start);
-                game_start = currentTime;
+                currentTime = add24Hours(start_at);
+                start_at = currentTime;
                 gamesToday = 0;
             }
-            return game
-        })
-        const { data, error } = await this.supabase
-            .from('games')
-            .insert(
-                games
-            )
-            .select();
+            return game;
+        });
         var round = {
             uid: roundUID,
-            timestamp: new Date().getTime(),
+            timestamp: start_at,
             num_games: games.length,
             num_players: groups.flat().length,
-            round_num
+            round_num,
+            tourney: uid
         }
-        const { d, e } = await this.supabase
+        var { data, error } = await this.supabase
             .from("rounds")
             .insert(round)
             .select()
-        if (error) {
-            console.error(error);
-            return { error: true, message: error.message }
-        };
-        return { data }
+        if (error) return { error: true, error: error.message }
+        var { data, error } = await this.supabase
+            .from("games")
+            .insert(
+                games
+            )
+            .select()
+        if (error) return { error: true, error: error.message }
+
+        return data
+    }
+    async startTournament(uid) {
+        var { live_players: stillIn, start_at, max_games_per_day, game_hour_diff, round_num } = await this.getTourney(uid);
+
+
+        // https://www.unixtimestamp.com/
+        var games = await this.createRound(uid, groups, start_at, max_games_per_day, game_hour_diff, round_num + 1);
     }
     async createGame(players, start_at, tourney) {
         var game = {
@@ -303,13 +316,13 @@ class TourneyManager {
         return (players.indexOf(player) !== -1)
     }
     async addPlayer(tourneyUID, playerUID) {
-        var { players, live_players, prize, ongoing, complete, entry_fee } = await this.getTourney(tourneyUID);
+        var { players, live_players, prize, ongoing, complete, entry_fee, start_at } = await this.getTourney(tourneyUID);
         var player = await this.getUser(playerUID);
-        
+
         if (!player[0] || player.error) return { error: true, message: "Player does not exist" }
         player = player[0]
         if (players) {
-            if (!ongoing && !complete) {
+            if (!ongoing && !complete && (new Date().getTime() < start_at)) {
                 prize += entry_fee;
                 if (players.indexOf(playerUID) !== -1) return { error: true, message: "Player already in the tourney" }
                 players.push(playerUID);

@@ -7,9 +7,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <title>MultiSnake Tournaments</title>
+        <script>
+            window.tourneyUID = "{{ uid }}"
+        </script>
     </head>
     <body>
         <h1>Managment for {{ name }} ({{ uid }})</h1>
+        <ul>
+            <li>
+                <button id = "createRound">Create round</button>
+            </li>
+        </ul>
         <ul>
             <li>UID: {{ uid }}</li>
             <li>Starts At: <script>
@@ -20,6 +28,10 @@
             <li>Prize: {{ prize }} ({{ entry_fee }} to enter)</li>
             <li>Max Games Per Day: {{ max_games_per_day }} ({{ game_hour_diff }} hours in between each game)</li>
             <li>On round: {{ round_num }} ({{ on_round }})
+            
+            
+                
+                
             
             <li>Players:
                 <ol>
@@ -58,5 +70,7 @@
                 </ol>
             </li>
             <li>Winner: {{ winner }}</li>
+            <div id = "notif-box"></div>
+            <script src = "/scripts/manage.js"></script>
         </body>
     </html>
