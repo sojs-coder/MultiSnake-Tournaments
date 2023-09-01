@@ -1,45 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <script src = "/scripts/helpers.js"></script>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/styles/noactiveTourney.css">
-        <link rel="stylesheet" href="/styles/signup.css">
-        <link rel="stylesheet" href="/styles/universal.css">
-        <script src = "/scripts/find_account.js" defer></script>
-        <title>MultiSnake Tournaments</title>
-    </head>
-    <body>
-        <div class="signup">
-            {% include "nav.njk" %}
-            <div class="main">
-                <div class="center-blob">
-                    <div class="text-56">Connect Your MultiSnake Account</div>
-                    <div class="seek-account">
-                        <input class="username" placeholder="Email">
-                        <button class="seek-button" >
-                            <div class="find-account">Find Account</div>
-                        </button>
 
-                    </div>
-                    <div class="dont-have-account-blurb">
-                        <span>
-                            <span class="dont-have-account-blurb-span">Don’t have a MultiSnake Account? </span>
-                            <span class="dont-have-account-blurb-span2">Create one now</span></span>
-                    </div>
+<head>
+    <meta charset="UTF-8">
+    <script src="/scripts/helpers.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/noactiveTourney.css">
+    <link rel="stylesheet" href="/styles/signup.css">
+    <link rel="stylesheet" href="/styles/universal.css">
+    <script src="/scripts/find_account.js" defer></script>
+    <title>Connect Account | MultiSnake Tournaments</title>
+</head>
+
+<body>
+    <div class="signup">
+        {% include "nav.njk" %}
+        <div class="main">
+            <div class="center-blob">
+                <h1 class="text-56">Connect Your MultiSnake Account</h1>
+                <div class="seek-account">
+                    <input class="username" placeholder="Email">
+                    <button class="seek-button">
+                        <div class="find-account">Find Account</div>
+                    </button>
+
                 </div>
-                <div class="results">
-                    {# <div class="result-username">JOE THE DOMINATOR</div>
-                    <div class="result-elo">457</div>
-                    <div class="result-age">Born in 2003</div>
-                    <div class="connect-button">
-                        <div class="connect-account">Connect Account</div>
-                    </div> #}
+                <div class="dont-have-account-blurb">
+                    <span>
+                        <p class="dont-have-account-blurb-span">Don’t have a MultiSnake Account? </p>
+                        <p class="dont-have-account-blurb-span2">Create one now</p>
+                    </span>
                 </div>
             </div>
+            <div class="results">
+                {# <div class="result-username">JOE THE DOMINATOR</div>
+                <div class="result-elo">457</div>
+                <div class="result-age">Born in 2003</div>
+                <div class="connect-button">
+                    <div class="connect-account">Connect Account</div>
+                </div> #}
+            </div>
         </div>
-        <div id="notif-box"></div>
-    </body>
+    </div>
+    <div id="notif-box"></div>
+</body>
+
 </html>

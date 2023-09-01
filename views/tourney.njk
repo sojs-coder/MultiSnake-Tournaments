@@ -7,31 +7,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/styles/tourney.css">
         <link rel="stylesheet" href="/styles/universal.css">
-        <title>MultiSnake Tournaments</title>
+        <title>{{ name }} | MultiSnake Tournaments</title>
     </head>
     <body>
         <div class="tourney-games">
             {% include "nav.njk" %}
             <div class="main">
-                <div class="tourney-name">
+                <h1 class="tourney-name">
                     {{ name }}- ${{ prize }} Prize {% if playerHasJoined %}(Joined){% else %}
                         <a href = "/join/{{ uid }}" class = "name-36">Join this tourney (${{ entry_fee }})</a>
                     {% endif %}
                     <p class = "game-uid">{{ uid }}</p>
-                </div>
+                </h1>
 
                 <div class="bottom-row">
                     <div class="running-games">
                         {% if ongoing %}
-                            <div class="game-round">Games (Round {{ round_num }})</div>
+                            <h2 class="game-round">Games (Round {{ round_num }})</h2>
                             <div class="game-column">
                                 {% for game in games %}
                                     <div class="game-box">
                                         <div class="title-part">
-                                            <div class="game-number">Game #{{ game.game_number }}</div>
-                                            <div class="game-flags">
+                                            <h3 class="game-number">Game #{{ game.game_number }}</h3>
+                                            <p class="game-flags">
                                                 {% if game.ongoing %}(ONGOING){% elif game.complete %}(COMPLETE){% endif %}
-                                            </div>
+                                            </p>
                                         </div>
                                         <div class="game-time">
                                             <script>
@@ -54,7 +54,7 @@
                                 {% endfor %}
                             </div>
                         {% else %}
-                            <div class="game-round">Round 1 games will be released in</div>
+                            <p class="game-round">Round 1 games will be released in</p>
                             <script>
                                 setInterval(count, 500);
                                 function count() {
@@ -85,7 +85,7 @@
                     </div>
                     <div class="players">
                         <div class="player-list">
-                            <div class="standing-title">Standing</div>
+                            <h2 class="standing-title">Standing</h2>
                             <div class="standing">
                                 {% for player in live_players %}
                                     <a href = "/account/{{ player.uid }}" class="name-24">
@@ -95,7 +95,7 @@
                                     </a>
                                 {% endfor %}
                             </div>
-                            <div class="eliminated-title">Eliminated</div>
+                            <h2 class="eliminated-title">Eliminated</h2>
                             <div class="eliminated">
                                 {% for player in ranked_players %}
                                     <a href = "/account/{{ player.uid }}" class="name-242">

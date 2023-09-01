@@ -1,49 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <script src = "/scripts/helpers.js"></script>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>MultiSnake Tournaments</title>
-    </head>
-    <body>
-        {% include "nav.njk" %}
-        <h1>Welcome to Tourney Managment</h1>
-        <h2>Active Tourneys</h2>
+<head>
+    <meta charset="UTF-8">
+    <script src="/scripts/helpers.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage | MultiSnake Tournaments</title>
+</head>
+
+<body>
+    {% include "nav.njk" %}
+    <h1>Welcome to Tourney Managment</h1>
+    <h2>Active Tourneys</h2>
+    <ul>
+        {% for t in activeTourneys %}
+        <li>
+            <a href="/manage/{{ t.uid }}">{{ t.name }} | {{ t.players.length }} Players | {{ t.prize }} Prize | On round
+                {{ t.round_num }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <button id="newTourney">Create a Tourney</button>
+    <details>
+        <summary>Unactive Tourneys</summary>
         <ul>
-            {% for t in activeTourneys %}
-                <li>
-                    <a href = "/manage/{{ t.uid }}">{{ t.name }} | {{ t.players.length }} Players | {{ t.prize }} Prize | On round {{ t.round_num }}</a>
-                </li>
+            {% for in unactiveTourneys %}
+            <li>
+                <a href="/manage/{{ t.uid }}">{{ t.name }} | {{ t.players.length }} Players | {{ t.prize }} Prize | On
+                    round {{ t.round_num }} | Starts at
+                    <script>
+                        document.write(convertToHuman(parseInt("{{ t.start_at }}")))
+                    </script>
+                </a>
+            </li>
             {% endfor %}
         </ul>
-        <button id = "newTourney">Create a Tourney</button>
-        <details>
-            <summary>Unactive Tourneys</summary>
-            <ul>
-                {% for  in unactiveTourneys %}
-                    <li>
-                        <a href = "/manage/{{ t.uid }}">{{ t.name }} | {{ t.players.length }} Players | {{ t.prize }} Prize | On round {{ t.round_num }} | Starts at                                         <script>
-                                document.write(convertToHuman(parseInt("{{ t.start_at }}")))
-                            </script>
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </details>
-        <details>
-            <summary>Complete Tourneys</summary>
-            <ul>
-                {% for t in completeTourneys %}
-                    <li>
-                        <a href = "/manage/{{ t.uid }}">{{ t.name }} | {{ t.players.length }} Players | {{ t.prize }} Prize | On round {{ t.round_num }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </details>
-        <div id = "notif-box"></div>
-        <script src = "/scripts/manage.js"></script>
-    </body>
+    </details>
+    <details>
+        <summary>Complete Tourneys</summary>
+        <ul>
+            {% for t in completeTourneys %}
+            <li>
+                <a href="/manage/{{ t.uid }}">{{ t.name }} | {{ t.players.length }} Players | {{ t.prize }} Prize | On
+                    round {{ t.round_num }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </details>
+    <div id="notif-box"></div>
+    <script src="/scripts/manage.js"></script>
+</body>
+
 </html>

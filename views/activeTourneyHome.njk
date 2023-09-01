@@ -1,46 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/styles/activeTourney.css">
-        <link rel="stylesheet" href="/styles/universal.css">
-        <script src = "/scripts/helpers.js"></script>
-        <title>MultiSnake Tournaments</title>
-    </head>
-    <body>
-        <div class="active-tourney">
-            {% include "nav.njk" %}
-            <div class="main">
-                <h1 class="multi-snake-tournaments">MultiSnake Tournaments</h1>
-                <div class="_30-players-0-games-complete-150-prize">
-                    {{ t.players.length }} Players | {{ t.live_players.length }} Players left | ${{ t.prize }} Prize
-                </div>
-                <div class="game-feed">
-                    <div class="table">
-                        {% for game in g %}
-                            {% if not game.complete %}
-                                <div class="row">
-                                    <div class="game">Game #{{ game.game_number }}</div>
-                                    <div class="players">
-                                        {% for player in game.players %}
-                                            <a href = "/account/{{player.uid}}">{{player.username}}</a>&nbsp;
-                                        {% endfor %}
-                                    </div>
-                                    <div class="time">
-                                        <script>
-                                            document.write(new Date(parseInt("{{ game.start_at }}")).toLocaleString());
-                                        </script>
-                                        AM PST
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/activeTourney.css">
+    <link rel="stylesheet" href="/styles/universal.css">
+    <script src="/scripts/helpers.js"></script>
+    <title>MultiSnake Tournaments</title>
+</head>
+
+<body>
+    <div class="active-tourney">
+        {% include "nav.njk" %}
+        <div class="main">
+            <h1 class="multi-snake-tournaments">MultiSnake Tournaments</h1>
+            <p class="_30-players-0-games-complete-150-prize">
+                {{ t.players.length }} Players | {{ t.live_players.length }} Players left | ${{ t.prize }} Prize
+            </p>
+            <div class="game-feed">
+                <div class="table">
+                    {% for game in g %}
+                    {% if not game.complete %}
+                    <div class="row">
+                        <h2 class="game">Game #{{ game.game_number }}</h2>
+                        <div class="players">
+                            {% for player in game.players %}
+                            <a href="/account/{{player.uid}}">{{player.username}}</a>&nbsp;
+                            {% endfor %}
+                        </div>
+                        <div class="time">
+                            <script>
+                                document.write(new Date(parseInt("{{ game.start_at }}")).toLocaleString());
+                            </script>
+                            AM PST
+                        </div>
                     </div>
+                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
-        <div id="notif-box"></div>
-    </body>
+    </div>
+    <div id="notif-box"></div>
+</body>
+
 </html>

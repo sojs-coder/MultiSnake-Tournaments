@@ -1,58 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <script src = "/scripts/helpers.js"></script>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/styles/leaderboard.css">
-        <link rel="stylesheet" href="/styles/universal.css">
 
-        <title>MultiSnake Tournaments</title>
-    </head>
-    <body>
-        <div class="leaderboard">
-            {% include "nav.njk" %}
-            <div class="main">
-                <div class="top-row-leaders">
-                    <div class="title-leaders">Leaderboard</div>
-                    <div class="leader-login-warning">All stats update after the user logs in on multisnake tournaments. Unactive player stats will not update</div>
+<head>
+    <meta charset="UTF-8">
+    <script src="/scripts/helpers.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/leaderboard.css">
+    <link rel="stylesheet" href="/styles/universal.css">
+
+    <title>Leaderboard | MultiSnake Tournaments</title>
+</head>
+
+<body>
+    <div class="leaderboard">
+        {% include "nav.njk" %}
+        <div class="main">
+            <div class="top-row-leaders">
+                <h1 class="title-leaders">Leaderboard</h1>
+                <p class="leader-login-warning">All stats update after the user logs in on multisnake tournaments.
+                    Unactive player stats will not update</p>
+            </div>
+            <div class="leader-table">
+                {% for player in ranks %}
+                {% if (loop.index == 1) %}
+                <div class="leaderboard-row leaderboard-first">
+                    <a href="/account/{{ player.uid }}" class="fname">{{ player.username }}</a>
+                    <div class="elo">{{ player.elo }}</div>
+                    <div class="games-played">{{ player.gamesPlayed }} games played</div>
                 </div>
-                <div class="leader-table">
-                    {% for player in ranks %}
-                        {% if (loop.index == 1) %}
-                            <div class="leaderboard-row leaderboard-first">
-                                <a href = "/account/{{ player.uid }}" class="fname">{{ player.username }}</a>
-                                <div class="elo">{{ player.elo }}</div>
-                                <div class="games-played">{{ player.gamesPlayed }} games played</div>
-                            </div>
-                        {% elif(loop.index == 2) %}
-                            <div class="leaderboard-row leaderboard-second">
-                                <a href = "/account/{{ player.uid }}"class="sname">{{ player.username }}</a>
-                                <div class="elo">{{ player.elo }}</div>
-                                <div class="games-played">{{ player.gamesPlayed }} games played</div>
-                            </div>
-                        {% elif (loop.index == 3)%}
-                            <div class="leaderboard-row leaderboard-third ">
-                                <a href = "/account/{{ player.uid }}"class="tname">{{ player.username }}</a>
-                                <div class="elo">{{ player.elo }}</div>
-                                <div class="games-played">{{ player.gamesPlayed }} games played</div>
-                            </div>
-                        {% else %}
-                            <div class="leaderboard-row">
-                                <a href = "/account/{{ player.uid }}"class="name">{{ player.username }}</a>
-                                <div class="elo">{{ player.elo }}</div>
-                                <div class="games-played">{{ player.gamesPlayed }} games played</div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                    <div class="leaderboard-row">
-                        <div style="color:white">*Has not played any tournament games yet, so this is based on nothing</div>
-                    </div>
+                {% elif(loop.index == 2) %}
+                <div class="leaderboard-row leaderboard-second">
+                    <a href="/account/{{ player.uid }}" class="sname">{{ player.username }}</a>
+                    <div class="elo">{{ player.elo }}</div>
+                    <div class="games-played">{{ player.gamesPlayed }} games played</div>
+                </div>
+                {% elif (loop.index == 3)%}
+                <div class="leaderboard-row leaderboard-third ">
+                    <a href="/account/{{ player.uid }}" class="tname">{{ player.username }}</a>
+                    <div class="elo">{{ player.elo }}</div>
+                    <div class="games-played">{{ player.gamesPlayed }} games played</div>
+                </div>
+                {% else %}
+                <div class="leaderboard-row">
+                    <a href="/account/{{ player.uid }}" class="name">{{ player.username }}</a>
+                    <div class="elo">{{ player.elo }}</div>
+                    <div class="games-played">{{ player.gamesPlayed }} games played</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                <div class="leaderboard-row">
+                    <div style="color:white">*Has not played any tournament games yet, so this is based on nothing</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div id="notif-box"></div>
-    </body>
+    <div id="notif-box"></div>
+</body>
+
 </html>

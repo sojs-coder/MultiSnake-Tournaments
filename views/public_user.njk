@@ -1,154 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <script src = "/scripts/helpers.js"></script>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/public_user.css">
-    <link rel="stylesheet" href="/styles/universal.css">
-    <title>MultiSnake Tournaments</title>
-  </head>
-  <body>
-    <div class="public-view">
-      {% include "nav.njk" %}
-      <div class="main">
-        <div class="user-data">
-          <div class="username-and-elo">
-            <div class="username">{{ username }}</div>
-            <div class="elo">({{ elo }})</div>
-          </div>
-          <div class="uid">{{ uid }}</div>
-          <div class="games-won-game-played">{{ gamesWon }} games won/{{ gamesPlayed }} games played</div>
-          <div class="tourneys-won-tourneys-played">
-        10 tourneys won/23 tourneys played*
-      </div>
-          <div class="_300-won-from-tourneys">${{ prizes_won }} won from tourneys</div>
-        </div>
-        <div class="false-hr"></div>
-        <div class="tourneys-played-table">
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$100 prize</div>
-            <div class="num-players">20 Players</div>
-            <div class="rank">Finished 1st</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$150 prize</div>
-            <div class="num-players">30 Players</div>
-            <div class="rank">Finished 8th</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">AMAZON WEEK</div>
-            <div class="tourney-prize">$500 prize</div>
-            <div class="num-players">10 Players</div>
-            <div class="rank">Finished 1st</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">MultiSnake Birthday</div>
-            <div class="tourney-prize">$415 prize</div>
-            <div class="num-players">83 Players</div>
-            <div class="rank">Finished 9th</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$1200 prize</div>
-            <div class="num-players">24 Players</div>
-            <div class="rank">Finished 2nd</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$150 prize</div>
-            <div class="num-players">30 Players</div>
-            <div class="rank">Finished 8th</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$100 prize</div>
-            <div class="num-players">20 Players</div>
-            <div class="rank">Finished 1st</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">October Fest</div>
-            <div class="tourney-prize">$50 prize</div>
-            <div class="num-players">10 Players</div>
-            <div class="rank">Finished 1st</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">MultiSnake Birthday</div>
-            <div class="tourney-prize">$415 prize</div>
-            <div class="num-players">83 Players</div>
-            <div class="rank">Finished 9th</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$1200 prize</div>
-            <div class="num-players">24 Players</div>
-            <div class="rank">Finished 2nd</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$150 prize</div>
-            <div class="num-players">30 Players</div>
-            <div class="rank">Finished 8th</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$100 prize</div>
-            <div class="num-players">20 Players</div>
-            <div class="rank">Finished 1st</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">October Fest</div>
-            <div class="tourney-prize">$50 prize</div>
-            <div class="num-players">10 Players</div>
-            <div class="rank">Finished 1st</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">MultiSnake Birthday</div>
-            <div class="tourney-prize">$415 prize</div>
-            <div class="num-players">83 Players</div>
-            <div class="rank">Finished 9th</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$150 prize</div>
-            <div class="num-players">30 Players</div>
-            <div class="rank">Finished 8th</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$1200 prize</div>
-            <div class="num-players">24 Players</div>
-            <div class="rank">Finished 2nd</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">Summer Challenge</div>
-            <div class="tourney-prize">$100 prize</div>
-            <div class="num-players">20 Players</div>
-            <div class="rank">Finished 1st</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">October Fest</div>
-            <div class="tourney-prize">$50 prize</div>
-            <div class="num-players">10 Players</div>
-            <div class="rank">Finished 1st</div>
-          </div>
-          <div class="tourney-row">
-            <div class="tourney-name">MultiSnake Birthday</div>
-            <div class="tourney-prize">$415 prize</div>
-            <div class="num-players">83 Players</div>
-            <div class="rank">Finished 9th</div>
-          </div>
-          <div class="tourney-row">
-            <p style = "color: white">* these stats are under development and innaccurate</p>
-          </div>
-        </div>
 
+<head>
+  <meta charset="UTF-8">
+  <script src="/scripts/helpers.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/public_user.css">
+  <link rel="stylesheet" href="/styles/universal.css">
+  <title>{{ username }} | MultiSnake Tournaments</title>
+</head>
+
+<body>
+  <div class="public-view">
+    {% include "nav.njk" %}
+    <div class="main">
+      <div class="user-data">
+        <div class="username-and-elo">
+          <h1 class="username">{{ username }}</h1>
+          <h3 class="elo">({{ elo }})</h3>
+        </div>
+        <p class="uid">{{ uid }}</p>
+        <p class="games-won-game-played">{{ gamesWon }} games won/{{ gamesPlayed }} games played</p>
+        <p class="tourneys-won-tourneys-played">
+          10 tourneys won/23 tourneys played*
+        </p>
+        <p class="_300-won-from-tourneys">${{ prizes_won }} won from tourneys</p>
       </div>
+      <div class="false-hr"></div>
+      <div class="tourneys-played-table">
+        <div class="tourney-row">
+          <h4 class="tourney-name">Summer Challenge</h4>
+          <p class="tourney-prize">$100 prize</p>
+          <p class="num-players">20 Players</p>
+          <p class="rank">Finished 1st</p>
+        </div>
+        <div class="tourney-row">
+          <p style="color: white">* these stats are under development and innaccurate</p>
+        </div>
+      </div>
+
     </div>
+  </div>
 
-    <div id="notif-box"></div>
-  </body>
+  <div id="notif-box"></div>
+</body>
+
 </html>
