@@ -11,30 +11,7 @@
     </head>
     <body>
         <div class="tourney-games">
-            <div class="navbar">
-                <div class="left-link-group">
-                    <div class="link">
-                        <a href = "/" class="link2">Home</a>
-                    </div>
-                    <div class="link">
-                        <a class="link2">Discord</a>
-                    </div>
-                </div>
-                <div class="right-link-group">
-                    <div class="link">
-                        <a class="link2">All Games</a>
-                    </div>
-                    <div class="link">
-                        <a href = "/leaderboard" class="link2">Leaderboard</a>
-                    </div>
-                    <div class="link">
-                        <a href = "/signup" class="link2">Sign up</a>
-                    </div>
-                    <div class="link">
-                        <a href = "/login" class="link2">Log in</a>
-                    </div>
-                </div>
-            </div>
+            {% include "nav.njk" %}
             <div class="main">
                 <div class="tourney-name">
                     {{ name }}- ${{ prize }} Prize {% if playerHasJoined %}(Joined){% else %}
@@ -58,7 +35,7 @@
                                         </div>
                                         <div class="game-time">
                                             <script>
-                                                document.write(convertToHuman({{ game.start_at }}))
+                                                document.write(convertToHuman(parseInt("{{ game.start_at }}")))
                                             </script>
                                             {% if game.ongoing %} |&nbsp;<a href = "{{ game.link }}&spectate=true">Click to watch</a>
                                             {% endif %}
@@ -81,7 +58,7 @@
                             <script>
                                 setInterval(count, 500);
                                 function count() {
-                                    var countDownDate = {{ start_at }}
+                                    var countDownDate = parseInt("{{ start_at }}");
                                     var now = new Date().getTime();
                                     var timeleft = countDownDate - now;
 

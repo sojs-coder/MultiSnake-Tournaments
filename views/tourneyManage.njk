@@ -12,6 +12,7 @@
         </script>
     </head>
     <body>
+        {% include "nav.njk" %}
         <h1>Managment for {{ name }} ({{ uid }})</h1>
         <ul>
             <li>
@@ -21,7 +22,7 @@
         <ul>
             <li>UID: {{ uid }}</li>
             <li>Starts At: <script>
-                    document.write(convertToHuman({{ start_at }}))
+                    document.write(convertToHuman(parseInt("{{ start_at }}")));
                 </script>
             </li>
             <li>Complete/Ongoing: {{ complete }}/{{ ongoing }}</li>
