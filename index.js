@@ -37,21 +37,27 @@ app.get("/", async (req, res) => {
         }
         res.render("activeTourneyHome.njk", {
             t: ongoingTourneys[0],
-            g: games
+            g: games,
+            user: req.session.user
         });
     } else {
         const nextTourney = await tManager.getUnactiveTourneys();
         res.render("noactiveTourneyHome.njk", {
             t: nextTourney[0],
+            user: req.session.user
         });
     }
 });
 app.get("/login", (req, res) => {
     req.session.goto = req.query.goto
-    res.render("login.njk")
+    res.render("login.njk",{
+        user: req.session.user
+    })
 });
 app.get("/signup", (req, res) => {
-    res.render("signup.njk");
+    res.render("signup.njk",{
+        user: req.session.user
+    });
 });
 app.get("/leaderboard", async (req, res) => {
     var ranks = await tManager.getRanks();
@@ -60,7 +66,7 @@ app.get("/leaderboard", async (req, res) => {
         return player
     })
 
-    res.render("leaderboard.njk", { ranks });
+    res.render("leaderboard.njk", { ranks, user: req.session.user });
 })
 app.get("/account/:uid", async (req, res, next) => {
     const user = await dbManager.getUser(req.params.uid);
@@ -68,7 +74,7 @@ app.get("/account/:uid", async (req, res, next) => {
     tManager.putUser(user);
     user.elo = user.elo || 400
     if (req.params.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk", user)
-    res.render("public_user.njk", user)
+    res.render("public_user.njk", {...user, user: req.session.user})
 });
 app.get("/account", async (req, res) => {
     if (!req.session.user) {
@@ -92,7 +98,7 @@ app.get("/account", async (req, res) => {
     var jtourneys = await Promise.all(joinedTourneys[0].tourneys.map(t => {
         return tManager.getTourney(t);
     }));
-    res.render("private_user.njk", { ...user, tourneys: jtourneys, ableToJoin: nOTourneys });
+    res.render("private_user.njk", { ...user, tourneys: jtourneys, ableToJoin: nOTourneys, user: req.session.user });
 });
 app.get("/join/:tourneyUID", (req, res) => {
     res.redirect("/checkout/" + req.params.tourneyUID)
@@ -101,19 +107,19 @@ app.get("/manage", async (req, res) => {
     var activesTourneys = await tManager.getActiveTourneys();
     var completeTourneys = await tManager.getCompleteTourneys();
     var unactiveTourneys = await tManager.getUnactiveTourneys()
-    res.render("manage.njk", { activesTourneys, completeTourneys, unactiveTourneys })
+    res.render("manage.njk", { activesTourneys, completeTourneys, unactiveTourneys, user: req.session.user })
 });
 app.get("/manage/:tourneyUID", async (req, res, next) => {
     var tourney = await tManager.getTourney(req.params.tourneyUID);
     if (!tourney || tourney.error) return next();
-    res.render("tourneyManage.njk", { ...tourney })
+    res.render("tourneyManage.njk", { ...tourney, user: req.session.user })
 });
 app.get("/checkout/:tourneyUID", async (req, res, next) => {
     if (!req.session.user) return res.redirect("/login?goto=/checkout/" + req.params.tourneyUID)
     var tourney = await tManager.getTourney(req.params.tourneyUID);
     if (!tourney || tourney.error) return next();
 
-    res.render("checkout.njk", tourney)
+    res.render("checkout.njk", {...tourney, user: req.session.user})
 })
 app.get("/tourney/:uid", async (req, res, next) => {
     var tourney = await tManager.getTourney(req.params.uid);
@@ -151,7 +157,7 @@ app.get("/tourney/:uid", async (req, res, next) => {
         var user = await tManager.getUser(req.session.user.uid);
         playerHasJoined = (user[0].tourneys.indexOf(tourney.uid) !== -1);
     }
-    res.render("tourney.njk", { ...tourney, games, playerHasJoined })
+    res.render("tourney.njk", { ...tourney, games, playerHasJoined, user: req.session.user })
 });
 app.post("/newTourney", express.json(), async (req, res) => {
     try {
