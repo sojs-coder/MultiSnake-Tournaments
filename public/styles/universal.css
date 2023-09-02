@@ -67,6 +67,12 @@ a:hover {
     text-decoration: underline;
     transition: 100ms;
 }
+p{
+    margin: 5px;
+}
+h1,h2,h3,h4,h5,h6{
+    margin: 8px;
+}
 
 button {
     cursor: pointer;
