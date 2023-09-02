@@ -79,7 +79,7 @@ app.get("/account/:uid", async (req, res, next) => {
     var updatedUser =await tManager.putUser(user);
     user ={ ...updatedUser[0], ...user}
     user.elo = user.elo || 400
-    //if (req.params.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk", user);
+    if (req.params.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk", user);
 
     var tourneys = user.tourneys;
 
