@@ -21,7 +21,8 @@ async function initialize() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ item }),
   });
-  const { clientSecret, costs } = await response.json();
+  const { clientSecret, costs, error } = await response.json();
+  if(error) displayNotif(error, "red")
   var baseCost = parseInt(document.getElementById("fee").getAttribute("data-base"));
   document.getElementById("fee").innerHTML = "$" + (costs[1] / 100 - baseCost).toFixed(2)
   document.getElementById("t").innerHTML = "$" + (costs[1] / 100)
@@ -61,7 +62,10 @@ async function handleSubmit(e) {
   });
   var data = await res.json();
   user = data.user;
-  if (!user) return showMessage("Use the same email that you login with")
+  if (!user) {
+    setLoading(false);
+    return showMessage("Use the same email that you login with")
+  }
   const { error } = await stripe.confirmPayment({
     elements,
     confirmParams: {

@@ -256,6 +256,8 @@ app.post("/create-payment-intent", express.json(), async (req, res) => {
     const { item } = req.body;
     var tourney = await tManager.getTourney(item.id);
     if (!tourney || tourney.error) return res.status(404).send({ error: "Tourney specified does not exist " });
+    if(tourney.ongoing || tourney.complete) return res.status(200).send({ error: "Tourney started or complete"});
+    if(!req.session.user || (req.session.user && !req.session.user.verified)) return res.status(403).send({ error: "Account not verified"})
     async function calculateOrderAmount() {
         var f = (x) => ((x + 30) / (1 - 0.029));
         return [tourney.entry_fee, Math.ceil(f(tourney.entry_fee * 100))];
