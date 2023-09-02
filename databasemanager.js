@@ -12,11 +12,11 @@ class TourneyManager {
         this.supabaseUrl = "https://aurcjoehedrtjdasadyt.supabase.co"
         this.supabase = createClient(this.supabaseUrl, process.env.SUPAKEY);
     }
-    async getRanks(limit = 22) {
+    async getRanks(limit = 500) {
         let { data: players, error } = await this.supabase
             .from("users")
             .select("*")
-            .order("elo", { ascending: true, nullsLast: true })
+            .order("elo", {ascending: false, nullsFirst: false})
             .limit(limit)
         if (error) {
             console.error(error);
