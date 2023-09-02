@@ -3,6 +3,7 @@ const http = require('http');
 const nunjucks = require("nunjucks");
 const session = require('express-session');
 const { sortByTime } = require("./helpers.js")
+const { resolve } = require("path")
 const { dbManager, tManager } = require("./databasemanager");
 const app = express();
 const server = http.createServer(app);
@@ -150,6 +151,9 @@ app.get("/checkout/:tourneyUID", async (req, res, next) => {
     if (!tourney || tourney.error) return next();
 
     res.render("checkout.njk", {...tourney, user: req.session.user})
+});
+app.get("/favicon.ico",(req,res)=>{
+    res.sendFile(resolve("./public/assets/snake.png"))
 })
 app.get("/tourney/:uid", async (req, res, next) => {
     var tourney = await tManager.getTourney(req.params.uid);

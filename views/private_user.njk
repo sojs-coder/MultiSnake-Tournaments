@@ -21,7 +21,10 @@
                     <p class="elo">({{ elo }})</p>
                 </div>
                 <p class="uid">{{ uid }}</p>
-                <a class="view-public-profile" href="/account/{{ uid }}">View public profile</a>
+                <p><a class="view-public-profile" href="/account/{{ uid }}">View public profile</a></p>
+                {% if not verified %}
+                <p class = "games-won-game-played"><a href = "https://multisnake.xyz/verifyEmail">Verify your account</a></p>
+                {% endif %}
                 <p class="games-won-game-played">{{ gamesWon }} games won/{{ gamesPlayed }} games played</p>
                 {# <p class="tourneys-won-tourneys-played">
                     {{ tourneysWon }} tourneys won/{{ tourneysPlayed }} tourneys played
@@ -47,6 +50,7 @@
                             starting. Failure to do so will result in a loss</span>
                 </div>
             </div> #}
+        
             {% for t in tourneys %}
             {% if not t.complete %}
             <div class="tourney-data">
@@ -54,7 +58,7 @@
                     <a href="/tourney/{{ t.uid }}" class="tourney-name-span">{{ t.name }} (Joined)</a>
                     {# <span class="tourney-name-span2">(Join)</span> #}
                 </h1>
-                <div class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</div>
+                <p class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</p>
                 <script>
                     setInterval(count, 500);
                     function count() {
