@@ -124,13 +124,22 @@ app.get("/account", async (req, res) => {
 app.get("/join/:tourneyUID", (req, res) => {
     res.redirect("/checkout/" + req.params.tourneyUID)
 });
-app.get("/manage", async (req, res) => {
+app.get("/manage", async (req, res, next) => {
+    var whiteList = ["c9ca879f-6511-42dd-9481-01e69c40af68"];
+
+    if(!req.session.user) return next();
+    if(whiteList.indexOf(req.session.user.uid) == -1) return next();
     var activesTourneys = await tManager.getActiveTourneys();
     var completeTourneys = await tManager.getCompleteTourneys();
     var unactiveTourneys = await tManager.getUnactiveTourneys()
     res.render("manage.njk", { activesTourneys, completeTourneys, unactiveTourneys, user: req.session.user })
 });
 app.get("/manage/:tourneyUID", async (req, res, next) => {
+    var whiteList = ["c9ca879f-6511-42dd-9481-01e69c40af68"];
+
+    if(!req.session.user) return next();
+    if(whiteList.indexOf(req.session.user.uid) == -1) return next();
+
     var tourney = await tManager.getTourney(req.params.tourneyUID);
     if (!tourney || tourney.error) return next();
     res.render("tourneyManage.njk", { ...tourney, user: req.session.user })
