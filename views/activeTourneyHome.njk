@@ -15,7 +15,7 @@
     <div class="active-tourney">
         {% include "nav.njk" %}
         <div class="main">
-            <h1 class="multi-snake-tournaments">MultiSnake Tournaments</h1>
+            <h1 class="multi-snake-tournaments">{{ t.name }}</h1>
             <p class="_30-players-0-games-complete-150-prize">
                 {{ t.players.length }} Players | {{ t.live_players.length }} Players left | ${{ t.prize }} Prize
             </p>
@@ -34,7 +34,7 @@
                             <script>
                                 document.write(new Date(parseInt("{{ game.start_at }}")).toLocaleString());
                             </script>
-                            AM PST
+                            PST
                         </div>
                     </div>
                     {% endif %}

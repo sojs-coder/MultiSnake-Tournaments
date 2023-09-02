@@ -1,49 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <script src="/scripts/helpers.js"></script>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/styles/public_user.css">
-  <link rel="stylesheet" href="/styles/universal.css">
-  <title>{{ username }} | MultiSnake Tournaments</title>
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <script src="/scripts/helpers.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/public_user.css">
+    <link rel="stylesheet" href="/styles/universal.css">
+    <title>{{ username }} | MultiSnake Tournaments</title>
+  </head>
 
-<body>
-  <div class="public-view">
-    {% include "nav.njk" %}
-    <div class="main">
-      <div class="user-data">
-        <div class="username-and-elo">
-          <h1 class="username">{{ username }}</h1>
-          <h3 class="elo">({{ elo }})</h3>
-        </div>
-        <p class="uid">{{ uid }}</p>
-        <p class="games-won-game-played">{{ gamesWon }} games won/{{ gamesPlayed }} games played</p>
-        <p class="tourneys-won-tourneys-played">
+  <body>
+    <div class="public-view">
+      {% include "nav.njk" %}
+      <div class="main">
+        <div class="user-data">
+          <div class="username-and-elo">
+            <h1 class="username">{{ username }}</h1>
+            <h3 class="elo">({{ elo }})</h3>
+          </div>
+          <p class="uid">{{ uid }}</p>
+          <p class="games-won-game-played">{{ gamesWon }} games won/{{ gamesPlayed }} games played</p>
+          {# <p class="tourneys-won-tourneys-played">
           10 tourneys won/23 tourneys played*
-        </p>
-        <p class="_300-won-from-tourneys">${{ prizes_won }} won from tourneys</p>
-      </div>
-      <div class="false-hr"></div>
-      <div class="tourneys-played-table">
-        <div class="tourney-row">
-          <h4 class="tourney-name">Summer Challenge</h4>
-          <p class="tourney-prize">$100 prize</p>
-          <p class="num-players">20 Players</p>
-          <p class="rank">Finished 1st</p>
+        </p> #}
+          <p class="_300-won-from-tourneys">${{ prizes_won }} won from tourneys</p>
         </div>
-        <div class="tourney-row">
-          <p style="color: white">* these stats are under development and innaccurate</p>
+        <div class="false-hr"></div>
+        <div class="tourneys-played-table">
+          {% for tourney in tourneys %}
+            <div class="tourney-row">
+              <a href = "/tourney/{{ tourney.uid}}" class="tourney-name">{{ tourney.name }}</a>
+              <p class="tourney-prize">${{ tourney.prize }} prize</p>
+              <p class="num-players">{{ tourney.players.length }} Players</p>
+              <p class="rank">{% if tourney.complete %}Finished {{ tourney.rank }}/{{ tourney.players.length }}{% else %}Tourney ongoing{% endif %}</p>
+            </div>
+          {% endfor %}
         </div>
-      </div>
 
+      </div>
     </div>
-  </div>
 
-  <div id="notif-box"></div>
-</body>
+    <div id="notif-box"></div>
+  </body>
 
 </html>

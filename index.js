@@ -69,12 +69,28 @@ app.get("/leaderboard", async (req, res) => {
     res.render("leaderboard.njk", { ranks, user: req.session.user });
 })
 app.get("/account/:uid", async (req, res, next) => {
-    const user = await dbManager.getUser(req.params.uid);
+    var user = await dbManager.getUser(req.params.uid);
     if (!user) return next();
-    tManager.putUser(user);
+    var updatedUser =await tManager.putUser(user);
+    user ={ ...updatedUser[0], ...user}
     user.elo = user.elo || 400
-    if (req.params.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk", user)
-    res.render("public_user.njk", {...user, user: req.session.user})
+    //if (req.params.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk", user);
+
+    var tourneys = user.tourneys;
+
+    tourneys = await Promise.all(tourneys.map(tuid=>{
+        return tManager.getTourney(tuid)
+    }));
+    tourneys = tourneys.map(tourney=>{
+        var mUID = user.uid;
+        var ranks = tourney.ranked_players.toReversed();
+
+        var rank = ranks.indexOf(mUID);
+        tourney.rank = rank;
+
+        return tourney;
+    })
+    res.render("public_user.njk", {...user, tourneys, user: req.session.user})
 });
 app.get("/account", async (req, res) => {
     if (!req.session.user) {
