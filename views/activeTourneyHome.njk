@@ -15,7 +15,7 @@
     <div class="active-tourney">
         {% include "nav.njk" %}
         <div class="main">
-            <h1 class="multi-snake-tournaments">{{ t.name }}</h1>
+            <h1 class="multi-snake-tournaments"><a href = "/tourney/{{ t.uid }}" class="multi-snake-tournaments">{{ t.name }}</a></h1>
             <p class="_30-players-0-games-complete-150-prize">
                 {{ t.players.length }} Players | {{ t.live_players.length }} Players left | ${{ t.prize }} Prize
             </p>

@@ -67,6 +67,11 @@ app.get("/leaderboard", async (req, res) => {
     })
 
     res.render("leaderboard.njk", { ranks, user: req.session.user });
+});
+app.get("/logout",(req,res)=>{
+    delete req.session.user;
+
+    res.redirect("/login")
 })
 app.get("/account/:uid", async (req, res, next) => {
     var user = await dbManager.getUser(req.params.uid);
