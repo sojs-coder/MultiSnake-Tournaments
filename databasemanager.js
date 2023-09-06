@@ -236,7 +236,7 @@ class TourneyManager {
                 tourney: uid,
                 ongoing: false,
                 players,
-                link: `https://multisnake.xyz/play/location_${guid()}?type=tourney`,
+                link: `https://multisnake.xyz/play/location_${guid()}?type=tourney?r=true`,
                 round: roundUID,
                 game_number: ++game_number
             }
@@ -288,7 +288,7 @@ class TourneyManager {
             tourney,
             ongoing: false,
             players,
-            link: `https://multisnake.xyz/play/location_${guid()}?type=tourney`
+            link: `https://multisnake.xyz/play/location_${guid()}?type=tourney?r=true`
         }
         const { data, error } = await this.supabase
             .from('games')
