@@ -31,10 +31,20 @@
                 </p> #}
             </div>
             <div class="false-hr"></div>
-            {# <div class="game-data">
-                <div class="game-number">Game #2</div>
-                <div class="game-players">Mollthecoder (400) | SoJS (538) | Fred (220) | Joe Mama (380)</div>
-                <div class="game-time">12/3/4 5:30 - In 0 days, 5 hours, 34 minutes, and 3 seconds</div>
+            {% for game in games %}
+            <div class="game-data">
+                <div class="game-number">Game #{{ game.game_number }}</div>
+                <div class = "game-players">{% for player in game.players %}{{ player }} (elo) {% if (loop.index0 != 0 %}|{% endif %}{% endfor %}</div>
+                {# <div class="game-players">Mollthecoder (400) | SoJS (538) | Fred (220) | Joe Mama (380)</div> #}
+                <script>
+                    function mdy(time){
+                        var date = new Date(time);
+                        var string = `${date.getMonth()}.${date.getDate()}.${date.getFullYear()}`
+                        document.write(string);
+                        return string
+                    }
+                </script>
+                <div class="game-time"><script>mdy({{ game.start_at }})</script> HH:MM - In 0 days, 5 hours, 34 minutes, and 3 seconds</div>
                 <div class="game-link">
                     <span>
                         <span
@@ -50,7 +60,7 @@
                             starting. Failure to do so will result in a loss</span>
                 </div>
             </div> #}
-        
+            {% endfor %}
             {% for t in tourneys %}
             {% if not t.complete %}
             <div class="tourney-data">

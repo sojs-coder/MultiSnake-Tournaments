@@ -102,7 +102,7 @@ app.get("/account", async (req, res) => {
     if (!req.session.user) {
         return res.redirect("/login")
     }
-    const user = await dbManager.getUser(req.session.user.uid);
+    var user = await dbManager.getUser(req.session.user.uid);
     var updatedUser = await tManager.putUser(user);
     updatedUser = updatedUser[0]
     if (!user) return next();
@@ -120,6 +120,11 @@ app.get("/account", async (req, res) => {
     var jtourneys = await Promise.all(joinedTourneys[0].tourneys.map(t => {
         return tManager.getTourney(t);
     }));
+
+    var games = await Promise.all(jtourneys.map(tourney=>{
+        return tManager.getGamesFromTourney(tourney.uid);
+    }));
+    console.log(`index.js 127: Showing "games":`,games)
     res.render("private_user.njk", { ...user, tourneys: jtourneys, ableToJoin: nOTourneys, user: req.session.user });
 });
 app.get("/join/:tourneyUID", (req, res) => {
