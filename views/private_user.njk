@@ -40,11 +40,22 @@
                     function mdy(time){
                         var date = new Date(time);
                         var string = `${date.getMonth()}.${date.getDate()}.${date.getFullYear()}`
-                        document.write(string);
                         return string
                     }
+                    function hm(timestamp){
+                        var time = new Date(timestamp);
+                        return time.getHours() + ":" + time.getMinutes();
+                    }
+                    var timestamp = {{ game.start_at }};
+                    document.getElementById("{{ loop.index }}-mdy").innerHTML = mdy(timestamp);
+                    document.getElementById("{{ loop.index }}-hm").innerHTML = hm(timestamp);
+
+                    function countdown(timestmap){
+                        return [days,hours,minutes,seconds]
+                    }
+
                 </script>
-                <div class="game-time"><script>mdy({{ game.start_at }})</script> HH:MM - In 0 days, 5 hours, 34 minutes, and 3 seconds</div>
+                <div class="game-time"><span id ="{{ loop.index }}-mdy">MM.DD.YYYY</span> <span id = "{{ loop.index }}-hm">HH:MM</span> - In 0 days, 5 hours, 34 minutes, and 3 seconds</div>
                 <div class="game-link">
                     <span>
                         <span
@@ -59,7 +70,7 @@
                             will result in immediate disqualification. Join the game within 1 minute of the game
                             starting. Failure to do so will result in a loss</span>
                 </div>
-            </div> #}
+            </div>
             {% endfor %}
             {% for t in tourneys %}
             {% if not t.complete %}
