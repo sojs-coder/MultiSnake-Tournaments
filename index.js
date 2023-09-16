@@ -23,7 +23,8 @@ app.use(
     session({
         secret: process.env.KEY,
         resave: false,
-        saveUninitialized: true
+        saveUninitialized: true,
+        persist: false
     })
 );
 app.get("/", async (req, res) => {

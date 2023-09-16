@@ -1,6 +1,7 @@
 const AWS = require("aws-sdk");
 const { createClient } = require("@supabase/supabase-js");
-const { guid } = require("./helpers.js")
+const { guid } = require("./helpers.js");
+const { post } = require("axios")
 
 AWS.config.update({
     region: "us-west-2",
@@ -16,7 +17,7 @@ class TourneyManager {
         let { data: players, error } = await this.supabase
             .from("users")
             .select("*")
-            .order("elo", {ascending: false, nullsFirst: false})
+            .order("elo", { ascending: false, nullsFirst: false })
             .limit(limit)
         if (error) {
             console.error(error);
@@ -191,10 +192,30 @@ class TourneyManager {
         };
         return live_players[0].live_players;
     }
-    async createRound({  start_at, tourney }) {
+    async restrictLocation(game_uid, location, game_start, [p1, p2, p3, p4]) {
+        try{
+        var res = await post("http://localhost:3001/restrictLocation", {
+            location,
+            game_start,
+            game_uid,
+            p1,
+            p2,
+            p3,
+            p4
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization":"Bearer "+ process.env.ROUND_KEY
+            }
+        })
+    }catch(err){
+        console.log(err.message)
+    }
+    }
+    async createRound({ start_at, tourney }) {
         var { uid, live_players: stillIn, start_at: tStart_at, max_games_day, game_hour_diff, round_num } = tourney
         var games = await this.getGamesFromTourney(uid);
-        if(!games || games.error) return games;
+        if (!games || games.error) return games;
         var game_number = games.length;
         stillIn = await Promise.all(stillIn.map(async (puid) => {
             return dbManager.getUser(puid)
@@ -228,18 +249,21 @@ class TourneyManager {
 
         var games = groups.map(players => {
             players = players.map(p => p.uid);
+            var game_uid = guid();
+            var location = `location_${guid()}`
             var game = {
-                uid: guid(),
+                uid: game_uid,
                 winner: null,
                 start_at: currentTime,
                 complete: false,
                 tourney: uid,
                 ongoing: false,
                 players,
-                link: `https://multisnake.xyz/play/location_${guid()}?type=tourney`,
+                link: `https://multisnake.xyz/play/${location}?type=tourney`,
                 round: roundUID,
                 game_number: ++game_number
             }
+            // send post to multisnake.xyz/restrict
             gamesToday++;
             currentTime = addXHours(currentTime, game_hour_diff);
             if (gamesToday >= max_games_day) {
@@ -247,6 +271,7 @@ class TourneyManager {
                 start_at = currentTime;
                 gamesToday = 0;
             }
+            this.restrictLocation(game_uid, location, game.start_at, players)
             return game;
         });
         var round = {
@@ -254,7 +279,7 @@ class TourneyManager {
             timestamp: start_at,
             num_games: games.length,
             num_players: groups.flat().length,
-            round_num,
+            round_num: round_num+1,
             tourney: uid
         }
         var { data, error } = await this.supabase
