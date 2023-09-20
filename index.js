@@ -72,7 +72,6 @@ app.get("/leaderboard", async (req, res) => {
 });
 app.get("/logout",(req,res)=>{
     delete req.session.user;
-
     res.redirect("/login")
 })
 app.get("/account/:uid", async (req, res, next) => {
