@@ -72,7 +72,6 @@ app.get("/leaderboard", async (req, res) => {
 });
 app.get("/logout",(req,res)=>{
     delete req.session.user;
-
     res.redirect("/login")
 })
 app.get("/account/:uid", async (req, res, next) => {
@@ -125,8 +124,8 @@ app.get("/account", async (req, res) => {
     var games = await Promise.all(jtourneys.map(tourney=>{
         return tManager.getGamesFromTourney(tourney.uid);
     }));
-    console.log(`index.js 127: Showing "games":`,games)
-    res.render("private_user.njk", { ...user, tourneys: jtourneys, ableToJoin: nOTourneys, user: req.session.user });
+    console.log(`index.js 127: Showing "games":`,games);
+    res.render("private_user.njk", { ...user, games, tourneys: jtourneys, ableToJoin: nOTourneys, user: req.session.user });
 });
 app.get("/join/:tourneyUID", (req, res) => {
     res.redirect("/checkout/" + req.params.tourneyUID)
