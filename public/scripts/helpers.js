@@ -25,7 +25,34 @@ function generateName() {
     var ending = start[Math.floor(Math.random() * start.length)] + end[Math.floor(Math.random() * end.length)] + Math.round(Math.random() * 100);
     return ending;
 }
+function mdy(time){
+    var date = new Date(time);
+    var string = `${date.getMonth()}.${date.getDate()}.${date.getFullYear()}`
+    return string
+}
+function hm(timestamp){
+    var time = new Date(timestamp);
+    return time.getHours() + ":" + time.getMinutes();
+}
+function timebetween(t1,t2){
+    var difference = t2-t1;
+    var day = 1000*60*60*24;
+    var hour = day/24;
+    var minute = hour/60;
+    var second = minute/60;
+    var millisecond = second/1000;
 
+    var days = Math.floor(difference/day);
+    difference -= days * day;
+    var hours = Math.floor(difference/hour);
+    difference -= hours * hour;
+    var minutes = Math.floor(difference/minute);
+    difference -= minutes * minute;
+    var seconds = Math.floor(difference/second);
+    difference -= seconds * second;
+
+    return [days, hours, minutes, seconds]
+}
 // Pick a random color from a predefined array
 function pickColor() {
     var colors = [

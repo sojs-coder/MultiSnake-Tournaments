@@ -125,8 +125,10 @@ app.get("/account", async (req, res) => {
     var games = await Promise.all(jtourneys.map(tourney=>{
         return tManager.getGamesFromTourney(tourney.uid);
     }));
+    games = games.flat();
+    games = games.filter(game => game.players.indexOf(req.session.user.uid) !== -1)
     console.log(`index.js 127: Showing "games":`,games)
-    res.render("private_user.njk", { ...user, tourneys: jtourneys, ableToJoin: nOTourneys, user: req.session.user });
+    res.render("private_user.njk", { ...user, tourneys: jtourneys, ableToJoin: nOTourneys, user: req.session.user, games });
 });
 app.get("/join/:tourneyUID", (req, res) => {
     res.redirect("/checkout/" + req.params.tourneyUID)
