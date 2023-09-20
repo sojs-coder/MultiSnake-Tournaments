@@ -33,174 +33,149 @@
                     {# <p class="tourneys-won-tourneys-played">
                     {{ tourneysWon }} tourneys won/{{ tourneysPlayed }} tourneys played
                 </p> #}
-            </div>
-            <div class="false-hr"></div>
-            {% for game in games %}
-            <div class="game-data">
-                <div class="game-number">Game #{{ game.game_number }}</div>
-                <div class = "game-players">{% for player in game.players %}{{ player }} (elo) {% if (loop.index0 != 0 %}|{% endif %}{% endfor %}</div>
-                {# <div class="game-players">Mollthecoder (400) | SoJS (538) | Fred (220) | Joe Mama (380)</div> #}
-                <div class="game-time"><span id ="{{ loop.index }}-mdy">MM.DD.YYYY</span> <span id = "{{ loop.index }}-hm">HH:MM</span> - In <span id = "{{ loop.index}}-days">0</span> days, <span id = "{{ loop.index}}-hours">0</span> hours, <span id = "{{ loop.index}}-minutes">0</span> minutes, and <span id = "{{ loop.index}}-seconds">0</span> seconds</div>
-                <div class="game-link">
-                    <span>
-                         <span class="game-link-span">Join link will reveal in <span id = "{{ loop.index }}-jl-d"></span> days, <span id = "{{ loop.index }}-jl-h"></span> hours, <span id = "{{ loop.index }}-jl-m"></span> minutes, and <span id = "{{ loop.index }}-jl-s"></span> seconds</span>
-                    </span>
                 </div>
-                <script>
-                    function mdy(time){
-                        var date = new Date(time);
-                        var string = `${date.getMonth()}.${date.getDate()}.${date.getFullYear()}`
-                        return string
-                    }
-                    function hm(timestamp){
-                        var time = new Date(timestamp);
-                        return time.getHours() + ":" + time.getMinutes();
-                    }
-                    var timestamp = {{ game.start_at }};
-                    document.getElementById("{{ loop.index }}-mdy").innerHTML = mdy(timestamp);
-                    document.getElementById("{{ loop.index }}-hm").innerHTML = hm(timestamp);
-
-                    function timebetween(t1,t2){
-                        var difference = t2-t1;
-                        var day = 1000*60*60*24;
-                        var hour = day/24;
-                        var minute = hour/60;
-                        var second = minute/60;
-                        var millisecond = second/1000;
-
-                        var days = Math.floor(difference/day);
-                        difference -= days * day;
-                        var hours = Math.floor(difference/hour);
-                        difference -= hours * hour;
-                        var minutes = Math.floor(difference/minute);
-                        difference -= minutes * minute;
-                        var seconds = Math.floor(difference/second);
-                        difference -= seconds * second;
-
-                        return [days, hours, minutes, seconds]
-                    }
-                    var [days, hours, minutes, seconds] = timebetween(new Date().getTime(), {{ game.start_at }});
-                    document.getElementById("{{ loop.index }}-days").innerHTML = days;
-                    document.getElementById("{{ loop.index }}-hours").innerHTML = hours;
-                    document.getElementById("{{ loop.index }}-minutes").innerHTML = minutes;
-                    document.getElementById("{{ loop.index }}-seconds").innerHTML = seconds;
-                    setInterval(()=>{
-                        var [days, hours, minutes, seconds] = timebetween(new Date().getTime(), {{ game.start_at }});
-                        document.getElementById("{{ loop.index }}-days").innerHTML = days;
-                        document.getElementById("{{ loop.index }}-hours").innerHTML = hours;
-                        document.getElementById("{{ loop.index }}-minutes").innerHTML = minutes;
-                        document.getElementById("{{ loop.index }}-seconds").innerHTML = seconds;
-                    },1000);
-
-                    var [days, hours, minutes, seconds] = timebetween(new Date().getTime(), {{ game.start_at }} - (3 * 60 * 1000));
-                    document.getElementById("{{ loop.index }}-jl-d").innerHTML = days;
-                    document.getElementById("{{ loop.index }}-jl-h").innerHTML = hours;
-                    document.getElementById("{{ loop.index }}-jl-m").innerHTML = minutes;
-                    document.getElementById("{{ loop.index }}-jl-s").innerHTML = seconds;
-                    setInterval(()=>{
-                        var [days, hours, minutes, seconds] = timebetween(new Date().getTime(), {{ game.start_at }} - (3 * 60 * 1000));
-                        document.getElementById("{{ loop.index }}-jl-d").innerHTML = days;
-                        document.getElementById("{{ loop.index }}-jl-h").innerHTML = hours;
-                        document.getElementById("{{ loop.index }}-jl-m").innerHTML = minutes;
-                        document.getElementById("{{ loop.index }}-jl-s").innerHTML = seconds;
-                        if(days == 0 && hours == 0 && minutes < 3 && seconds <= 59){
-                            fetch("/get-join-link",{
-                                method: "POST",
-                                headers: {
-                                    "Content-Type":"application/json"
-                                },
-                                body: JSON.stringif({
-                                    game_id: {{ game.uid }}
-                                })
-                            })
-                            .then(r => r.json())
-                            .then(/* do something here */)
-                        }
-                    },500);
-                </script>
-                <div class="warning">
-                        <span class="warning-span">Do not share the join link with anyone. Sharing the link with someone will result in immediate disqualification.</span>
-                    </div>
-                </div>
-            {% endfor %}
-            {% for t in tourneys %}
-                {% if not t.complete %}
-                    <div class="tourney-data">
-                        <h1 class="tourney-name">
-                            <a href="/tourney/{{ t.uid }}" class="tourney-name-span">{{ t.name }} (Joined)</a>
-                            {# <span class="tourney-name-span2">(Join)</span> #}
-                        </h1>
-                        <p class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</p>
-
-                        <p class="tourney-start">
-                            {% if t.ongoing %}Round {{ t.round_num }}
-                            {% else %}Starts in&nbsp;<span
-                        id="d{{ loop.index }}"></span>&nbsp;days,&nbsp;<span id="h{{ loop.index }}"></span>&nbsp;hours,
-                    &nbsp;<span id="m{{ loop.index }}"></span>&nbsp;minutes, and&nbsp;<span
-                        id="s{{ loop.index }}"></span>&nbsp;seconds{% endif %}
-                        </p>
-                        <script>
-                            setInterval(count, 500);
-                            function count() {
-                                var countDownDate = parseInt("{{ t.start_at }}");
-                                var now = new Date().getTime();
-                                var timeleft = countDownDate - now;
-
-                                var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
-                                var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
-                                var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
-
-                                var d = document.getElementById("d{{ loop.index }}");
-                                var h = document.getElementById("h{{ loop.index }}");
-                                var m = document.getElementById("m{{ loop.index }}");
-                                var s = document.getElementById("s{{ loop.index }}");
-
-                                d.innerHTML = days;
-                                h.innerHTML = hours;
-                                m.innerHTML = minutes;
-                                s.innerHTML = seconds;
-                            }
-                        </script>
-                    </div>
-                {% endif %}
-            {% endfor %}
-            {% for t in ableToJoin %}
-                {% if not t.complete %}
-                    <div class="tourney-data">
-                        <h2 class="tourney-name">
+                <div class="false-hr"></div>
+                {% for game in games %}
+                    <div class="game-data">
+                        <div class="game-number">Game #{{ game.game_number }}</div>
+                        <div class = "game-players">
+                            {% for player in game.players %}{{ player }} (elo) {% if (loop.index0 != 0) %}|{% endif %}
+                            {% endfor %}
+                        </div>
+                        {# <div class="game-players">Mollthecoder (400) | SoJS (538) | Fred (220) | Joe Mama (380)</div> #}
+                        <div class="game-time">
+                            <span id = "{{ loop.index }}-convert"></span></div>
+                        <div class="game-link">
                             <span>
-                                <a href="/tourney/{{ t.uid }}" class="tourney-name-span">{{ t.name }} (Click to join)</a>
-                                {# <span class="tourney-name-span2">(Join)</span> #}
-                            </h2>
-                            <div class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</div>
-                            <script>
-                                setInterval(count, 500);
-                                function count() {
-                                    var countDownDate = parseInt("{{ t.start_at }}");
-                                    var now = new Date().getTime();
-                                    var timeleft = countDownDate - now;
+                                <span class="game-link-span">Join link will reveal in <span id = "{{ loop.index }}-jl-d"></span> days, <span id = "{{ loop.index }}-jl-h"></span> hours, <span id = "{{ loop.index }}-jl-m"></span> minutes, and <span id = "{{ loop.index }}-jl-s"></span> seconds</span>
+                            </span>
+                        </div>
+                        <script>
 
-                                    var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
-                                    var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                    var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
-                                    var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
-
-                                    var d = document.getElementById("d{{ loop.index }}");
-                                    var h = document.getElementById("h{{ loop.index }}");
-                                    var m = document.getElementById("m{{ loop.index }}");
-                                    var s = document.getElementById("s{{ loop.index }}");
-
-                                    d.innerHTML = days;
-                                    h.innerHTML = hours;
-                                    m.innerHTML = minutes;
-                                    s.innerHTML = seconds;
+                            var [days, hours, minutes, seconds] = timebetween(new Date().getTime(), {{ game.start_at }} -(3 * 60 * 1000));
+                            document
+                                .getElementById("{{ loop.index }}-jl-d")
+                                .innerHTML = days;
+                            document
+                                .getElementById("{{ loop.index }}-jl-h")
+                                .innerHTML = hours;
+                            document
+                                .getElementById("{{ loop.index }}-jl-m")
+                                .innerHTML = minutes;
+                            document
+                                .getElementById("{{ loop.index }}-jl-s")
+                                .innerHTML = seconds;
+                            setInterval(() => {
+                                var [days, hours, minutes, seconds] = timebetween(new Date().getTime(), {{ game.start_at }} -(3 * 60 * 1000));
+                                document
+                                    .getElementById("{{ loop.index }}-jl-d")
+                                    .innerHTML = days;
+                                document
+                                    .getElementById("{{ loop.index }}-jl-h")
+                                    .innerHTML = hours;
+                                document
+                                    .getElementById("{{ loop.index }}-jl-m")
+                                    .innerHTML = minutes;
+                                document
+                                    .getElementById("{{ loop.index }}-jl-s")
+                                    .innerHTML = seconds;
+                                if (days <= 0 && hours <= 0 && minutes < 3 && seconds <= 59) {
+                                    fetch("/get-join-link", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({game_id: "{{ game.uid }}"})
+                                    })
+                                        .then(r => r.json())
+                                        .then(/* do something here */)
                                 }
-                            </script>
-                            <div class="tourney-start">
+                            }, 500);
+                        </script>
+                        <div class="warning">
+                            <span class="warning-span">Do not share the join link with anyone. Sharing the link with someone will result in immediate disqualification.</span>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for t in tourneys %}
+                    {% if not t.complete %}
+                        <div class="tourney-data">
+                            <h1 class="tourney-name">
+                                <a href="/tourney/{{ t.uid }}" class="tourney-name-span">{{ t.name }} (Joined)</a>
+                                {# <span class="tourney-name-span2">(Join)</span> #}
+                            </h1>
+                            <p class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</p>
+
+                            <p class="tourney-start">
                                 {% if t.ongoing %}
-                    Round {{ t.round_num }}
+                                     Round {{ t.round_num }}
                                 {% else %}
+                                  Starts in&nbsp;<span id="d{{ loop.index }}"></span>&nbsp;days,&nbsp;<span id="h{{ loop.index }}"></span>&nbsp;hours,&nbsp;<span id="m{{ loop.index }}"></span>&nbsp;minutes, and&nbsp;<spanid="s{{ loop.index }}"></span>&nbsp;seconds
+                                <script>
+                                        setInterval(count, 500);
+                                        function count() {
+                                            var countDownDate = parseInt("{{ t.start_at }}");
+                                            var now = new Date().getTime();
+                                            var timeleft = countDownDate - now;
+
+                                            var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+                                            var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                            var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+                                            var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+                                            var d = document.getElementById("d{{ loop.index }}");
+                                            var h = document.getElementById("h{{ loop.index }}");
+                                            var m = document.getElementById("m{{ loop.index }}");
+                                            var s = document.getElementById("s{{ loop.index }}");
+
+                                            d.innerHTML = days;
+                                            h.innerHTML = hours;
+                                            m.innerHTML = minutes;
+                                            s.innerHTML = seconds;
+                                        }
+                                    </script>
+                                {% endif %}
+                            </p>
+
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% for t in ableToJoin %}
+                    {% if not t.complete %}
+                        <div class="tourney-data">
+                            <h2 class="tourney-name">
+                                <span>
+                                    <a href="/tourney/{{ t.uid }}" class="tourney-name-span">{{ t.name }} (Click to join)</a>
+                                    {# <span class="tourney-name-span2">(Join)</span> #}
+                                </h2>
+                                <div class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</div>
+                                <script>
+                                    setInterval(count, 500);
+                                    function count() {
+                                        var countDownDate = parseInt("{{ t.start_at }}");
+                                        var now = new Date().getTime();
+                                        var timeleft = countDownDate - now;
+
+                                        var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+                                        var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                        var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+                                        var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+                                        var d = document.getElementById("d{{ loop.index }}");
+                                        var h = document.getElementById("h{{ loop.index }}");
+                                        var m = document.getElementById("m{{ loop.index }}");
+                                        var s = document.getElementById("s{{ loop.index }}");
+
+                                        d.innerHTML = days;
+                                        h.innerHTML = hours;
+                                        m.innerHTML = minutes;
+                                        s.innerHTML = seconds;
+                                    }
+                                </script>
+                                <div class="tourney-start">
+                                    {% if t.ongoing %}
+                    Round {{ t.round_num }}
+                                    {% else %}
                     Starts in&nbsp;
                     <span id="d{{ loop.index }}"></span>
                     &nbsp;days,&nbsp;
@@ -212,14 +187,14 @@
                     <span id="s{{ loop.index }}"></span>
                     &nbsp;seconds
                     {% endif %}
+                                </div>
                             </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
-        </div>
 
-        <div id="notif-box"></div>
-    </body>
+            <div id="notif-box"></div>
+        </body>
 
-</html>
+    </html>
