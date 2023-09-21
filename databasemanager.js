@@ -192,11 +192,12 @@ class TourneyManager {
         };
         return live_players[0].live_players;
     }
-    async restrictLocation(game_uid, location, game_start, [p1, p2, p3, p4]) {
+    async restrictLocation(game_uid, location, game_start, [p1, p2, p3, p4],webhookURL) {
         try{
         var res = await post("http://localhost:3001/restrictLocation", {
             location,
             game_start,
+            webhookURL,
             game_uid,
             p1,
             p2,
@@ -207,7 +208,7 @@ class TourneyManager {
                 "Content-Type": "application/json",
                 "Authorization":"Bearer "+ process.env.ROUND_KEY
             }
-        })
+        });
     }catch(err){
         console.log(err.message)
     }
@@ -251,6 +252,7 @@ class TourneyManager {
             players = players.map(p => p.uid);
             var game_uid = guid();
             var location = `location_${guid()}`
+            var webhookURL = `http://localhost:3000/webhook/${game_uid}`
             var game = {
                 uid: game_uid,
                 winner: null,
@@ -271,7 +273,7 @@ class TourneyManager {
                 start_at = currentTime;
                 gamesToday = 0;
             }
-            this.restrictLocation(game_uid, location, game.start_at, players)
+            this.restrictLocation(game_uid, location, game.start_at, players,webhookURL)
             return game;
         });
         var round = {
@@ -448,6 +450,15 @@ class TourneyManager {
             return { error: true, message: error.message }
         };
         return { data, uid: tourney.uid }
+    }
+    async putWinner(gameUID, playerUID){
+        var { data, error } = await this.supabase
+        .from("games")
+        .update({ winner: playerUID })
+        .eq("uid",gameUID);
+        if(error) return { error: true, message: error.message }
+
+        return data;
     }
 }
 

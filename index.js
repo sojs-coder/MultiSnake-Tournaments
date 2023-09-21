@@ -220,6 +220,21 @@ app.post("/newRound", express.json(), async (req,res)=>{
     var tres = await tManager.createRound({ start_at, tourney});
     if(!tres || tres.error) return res.status(500).send({ error: true, message: (tres) ? tres.message || "Something went wrong..." : "Something went wrong..."})
     return res.status(200).send({ data: tres })
+});
+app.post("/webhook/:gameUID",express.json(), async (req,res)=>{
+    /* data: {
+					snake,
+					roomUID: this.uid,
+					roomType: this.type
+				}, */
+    var { data, timestamp, type } = req.body;
+    console.log("line 231 index.js");
+    switch(type){
+        case "win":
+            var { snake, roomUID, roomType } = data;
+            await tManager.putWinner()
+            break;
+    }
 })
 app.post('/login', express.json(), async (req, res) => {
     const { email, password } = req.body;
