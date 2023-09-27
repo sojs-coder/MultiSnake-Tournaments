@@ -25,6 +25,16 @@ body {
     position: relative;
 }
 
+.base-text {
+    color: #FFF;
+    font-family: "Inter", sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.2px;
+}
+
 .link {
     padding: 0px 10px 0px 10px;
     display: flex;
@@ -67,10 +77,17 @@ a:hover {
     text-decoration: underline;
     transition: 100ms;
 }
-p{
+
+p {
     margin: 5px;
 }
-h1,h2,h3,h4,h5,h6{
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin: 8px;
 }
 
@@ -84,12 +101,14 @@ input {
     transition: 500ms;
 }
 
-button{
+button {
     background-color: #008000;
 }
-button:hover{
+
+button:hover {
     background-color: #008000aa;
 }
+
 input:focus {
     outline: 1px solid rgb(255, 255, 255);
 }

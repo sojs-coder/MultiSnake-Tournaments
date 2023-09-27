@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <script src = "/scripts/helpers.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/styles/alltourneys.css">
+        <link rel="stylesheet" href="/styles/universal.css">
+        <title>Tourneys | MultiSnake Tournaments</title>
+    </head>
+    <body>
+        <div class="all-tourneys">
+            {% include "nav.njk" %}
+            <div class="main">
+                <div class="tourneys">Tourneys</div>
+                <div class="row-t">
+                    <div class="left-col-t">
+                        <div class="title">Ongoing Tourneys</div>
+                        {% for t in ongoingTourneys %}
+                        <div class="tourney">
+                            <div class="tourney-t">
+                                <span>
+                                    <span class="tourney-t-span">{{ t.name }} </span>
+                                    <a class="tourney-t-span2" href = "/join/{{ t.uid }}">(Click to join)</a>
+                                </span>
+                            </div>
+                            <div class="basic-t-tourney">{{ t.players.length }} Players</div>
+                            <div class="basic-t-tourney">${{ t.prize }} Prize</div>
+                            <div class="basic-t-tourney">On round {{ t.roundNum }}</div>
+                            <a href = "/tourney/{{ t.uid }}" class="basic-t-tourney2">View Page</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="right-col-t">
+                        <div class="title">Complete Tourneys</div>
+                        {% for t in completeTourneys %}
+                        <div class="tourney-fixed-h">
+                            <div class="tourney-t2">{{ t.name }}</div>
+                            <div class="basic-t-tourney">{{ t.players.length }} Players</div>
+                            <div class="basic-t-tourney">${{ t.prize }} Prize</div>
+                            <div class="basic-t-tourney">{{ t.winnerFormatted[0].username }} Won</div>
+                            <a href = "/tourney/{{ t.uid }}" class="basic-t-tourney2">View Page</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="notif-box"></div>
+    </body>
+</html>

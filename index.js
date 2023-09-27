@@ -1,9 +1,10 @@
+require("dotenv").config();
 const express = require('express');
 const http = require('http');
 const nunjucks = require("nunjucks");
 const session = require('express-session');
 const { sortByTime } = require("./helpers.js")
-const { resolve } = require("path")
+const { resolve } = require("path");
 const { dbManager, tManager } = require("./databasemanager");
 const app = express();
 const server = http.createServer(app);
@@ -11,7 +12,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET)
 const bodyParser = require('body-parser');
 const endpointSecret = process.env.SIGN_SECRET;
 
-
+const morgan = require("morgan")
 app.use(express.static(
     "./public"
 ));
@@ -19,12 +20,13 @@ nunjucks.configure("views", {
     autoescape: true,
     express: app
 });
+app.use(morgan('dev'))
 app.use(
     session({
         secret: process.env.KEY,
         resave: false,
         saveUninitialized: true,
-        persist: false
+        persist: true,
     })
 );
 app.get("/", async (req, res) => {
@@ -125,9 +127,24 @@ app.get("/account", async (req, res) => {
         return tManager.getGamesFromTourney(tourney.uid);
     }));
     games = games.flat();
-    games = games.filter(game => game.players.indexOf(req.session.user.uid) !== -1)
-    console.log(`index.js 127: Showing "games":`,games)
-    res.render("private_user.njk", { ...user, tourneys: jtourneys, ableToJoin: nOTourneys, user: req.session.user, games });
+    games = games.filter(game => game.players.indexOf(req.session.user.uid) !== -1);
+    var passedGamesNum = 0;
+    for(var i = 0; i < games.length; i++){
+        if(new Date().getTime() >= games[i].start_at){
+            games[i].passed = true;
+            passedGamesNum++;
+        }
+        games[i].players = await Promise.all(games[i].players.map(playerUID=>{
+            return tManager.getUser(playerUID);
+        }));
+        games[i].players = games[i].players.map(player => {
+            player = player[0]
+            player.elo = player.elo || 400;
+            return player;
+        })
+    }
+    var noGamesToPlay = (passedGamesNum == games.length);
+    res.render("private_user.njk", { ...user,noGamesToPlay, tourneys: jtourneys, ableToJoin: nOTourneys, user: req.session.user, games });
 });
 app.get("/join/:tourneyUID", (req, res) => {
     res.redirect("/checkout/" + req.params.tourneyUID)
@@ -137,10 +154,10 @@ app.get("/manage", async (req, res, next) => {
 
     if(!req.session.user) return next();
     if(whiteList.indexOf(req.session.user.uid) == -1) return next();
-    var activesTourneys = await tManager.getActiveTourneys();
+    var activeTourneys = await tManager.getActiveTourneys();
     var completeTourneys = await tManager.getCompleteTourneys();
     var unactiveTourneys = await tManager.getUnactiveTourneys()
-    res.render("manage.njk", { activesTourneys, completeTourneys, unactiveTourneys, user: req.session.user })
+    res.render("manage.njk", { activeTourneys, completeTourneys, unactiveTourneys, user: req.session.user })
 });
 app.get("/manage/:tourneyUID", async (req, res, next) => {
     var whiteList = ["c9ca879f-6511-42dd-9481-01e69c40af68"];
@@ -156,9 +173,18 @@ app.get("/checkout/:tourneyUID", async (req, res, next) => {
     if (!req.session.user) return res.redirect("/login?goto=/checkout/" + req.params.tourneyUID)
     var tourney = await tManager.getTourney(req.params.tourneyUID);
     if (!tourney || tourney.error) return next();
-
+    if(tourney.players.indexOf(req.session.user.uid) !== -1) return res.redirect("/tourney/"+req.params.tourneyUID);
     res.render("checkout.njk", {...tourney, user: req.session.user})
 });
+app.get("/tourneys", async (req,res)=>{
+    var ongoingTourneys = await tManager.getActiveTourneys();
+    var completeTourneys = await tManager.getCompleteTourneys();
+
+    for (var i = 0; i < completeTourneys.length; i++){
+        completeTourneys[i].winnerFormatted = await tManager.getUser(completeTourneys[i].winner);
+    }
+    res.render("alltourneys.njk",{ ongoingTourneys, completeTourneys });
+})
 app.get("/favicon.ico",(req,res)=>{
     res.sendFile(resolve("./public/assets/snake.png"))
 })
@@ -179,8 +205,8 @@ app.get("/tourney/:uid", async (req, res, next) => {
         game.players = game.players.map(playerUID => {
             var player = tourney.players.filter(tourneyMatch => tourneyMatch.uid == playerUID);
             player = player[0] || null;
-
-            return player;
+            var isWinner = (game.winner == player.uid)
+            return {...player, isWinner };
         });
         return game;
     })
@@ -211,6 +237,17 @@ app.post("/newTourney", express.json(), async (req, res) => {
     }
 
 });
+app.post("/get-join-link",express.json(),async (req,res)=>{
+    if(!req.session.user) return res.json({ error: true, message: "Not authorized"})
+    var game = await tManager.getGame(req.body.game_id);
+    
+    if(game.start_at - new Date().getTime() <= 3*60*1000 && game.players.indexOf(req.session.user.uid) !== -1){
+        res.json({ link: game.link})
+    }else{
+        res.json({ error: true, message: "not authorized"})
+    }
+
+})
 app.post("/newRound", express.json(), async (req,res)=>{
     var { start_at, uid } = req.body;
     const tourney = await tManager.getTourney(uid);
@@ -232,9 +269,10 @@ app.post("/webhook/:gameUID",express.json(), async (req,res)=>{
     switch(type){
         case "win":
             var { snake, roomUID, roomType } = data;
-            await tManager.putWinner()
+            await tManager.putWinner(req.params.gameUID, snake);
             break;
     }
+    res.json({ wheee: true})
 })
 app.post('/login', express.json(), async (req, res) => {
     const { email, password } = req.body;
@@ -360,6 +398,10 @@ app.post("/connect_account", express.json(), async (req, res) => {
     } catch (err) {
         return res.status(500).json({ code: 500, message: err.message, error: err, color: "red" })
     }
+});
+
+app.use((req,res)=>{
+    res.render("404.njk")
 })
 server.listen(3000, () => {
     console.log('Server Live');

@@ -192,26 +192,26 @@ class TourneyManager {
         };
         return live_players[0].live_players;
     }
-    async restrictLocation(game_uid, location, game_start, [p1, p2, p3, p4],webhookURL) {
-        try{
-        var res = await post("http://localhost:3001/restrictLocation", {
-            location,
-            game_start,
-            webhookURL,
-            game_uid,
-            p1,
-            p2,
-            p3,
-            p4
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization":"Bearer "+ process.env.ROUND_KEY
-            }
-        });
-    }catch(err){
-        console.log(err.message)
-    }
+    async restrictLocation(game_uid, location, game_start, [p1, p2, p3, p4], webhookURL) {
+        try {
+            var res = await post("http://localhost:3001/restrictLocation", {
+                location,
+                game_start,
+                webhookURL,
+                game_uid,
+                p1,
+                p2,
+                p3,
+                p4
+            }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + process.env.ROUND_KEY
+                }
+            });
+        } catch (err) {
+            console.log(err.message)
+        }
     }
     async createRound({ start_at, tourney }) {
         var { uid, live_players: stillIn, start_at: tStart_at, max_games_day, game_hour_diff, round_num } = tourney
@@ -240,6 +240,12 @@ class TourneyManager {
                 .update({ ongoing: true })
                 .eq("uid", uid)
             if (error) return { error: true, error: error.message }
+        }else{
+            var { data, error } = await this.supabase
+            .from("tourneys")
+            .update({ round_num: ++round_num })
+            .eq("uid", uid)
+            if (error) return { error: true, error: error.message }
         }
 
         var roundUID = guid();
@@ -261,7 +267,7 @@ class TourneyManager {
                 tourney: uid,
                 ongoing: false,
                 players,
-                link: `https://multisnake.xyz/play/${location}?type=tourney?r=true`,
+                link: `https://multisnake.xyz/play/${location}?type=tourney`,
                 round: roundUID,
                 game_number: ++game_number
             }
@@ -273,7 +279,7 @@ class TourneyManager {
                 start_at = currentTime;
                 gamesToday = 0;
             }
-            this.restrictLocation(game_uid, location, game.start_at, players,webhookURL)
+            this.restrictLocation(game_uid, location, game.start_at, players, webhookURL)
             return game;
         });
         var round = {
@@ -281,7 +287,7 @@ class TourneyManager {
             timestamp: start_at,
             num_games: games.length,
             num_players: groups.flat().length,
-            round_num: round_num+1,
+            round_num: ++round_num,
             tourney: uid
         }
         var { data, error } = await this.supabase
@@ -393,21 +399,46 @@ class TourneyManager {
         return tourneys
     }
     async finishGame(gameID, winner) {
-        var { players, tourney } = await this.getGame(gameID);
+        var { players, tourney, error, message } = await this.getGame(gameID);
         var deadPlayers = players.filter(player => {
             return player !== winner;
         });
-        // finish here remove dead players from live_players from `tourney.live_players`
-        // add all dead players to `tourney.ranked_players`
+        if (error) return message;
+        var { live_players, ranked_players, error, message } = await this.getTourney(tourney);
+        if (error) return { error, message }
+        live_players = live_players.filter(player => {
+            return deadPlayers.indexOf(player) == -1;
+        })
+        ranked_players = ranked_players.concat(deadPlayers)
         var { data, error } = await this.supabase
             .from('games')
-            .update({ complete: true, winner })
+            .update({ complete: true, ongoing: false, winner })
             .eq("uid", gameID);
         if (error) {
             console.error(error);
             return { error: true, message: error.message }
         };
-        return data
+
+        if (live_players.length == 1) {
+            var { data, error } = await this.supabase
+                .from('tourneys')
+                .update({ live_players, ranked_players, winner: live_players[0], complete: true, ongoing: false })
+                .eq('uid', tourney)
+            if (error) {
+                console.error(error);
+                return { error: true, message: error.message }
+            };
+        } else {
+            var { data, error } = await this.supabase
+                .from('tourneys')
+                .update({ live_players, ranked_players })
+                .eq('uid', tourney)
+            if (error) {
+                console.error(error);
+                return { error: true, message: error.message }
+            };
+        }
+        return { success: true }
     }
     async startGame(gameID) {
         var { data, error } = await this.supabase
@@ -451,13 +482,8 @@ class TourneyManager {
         };
         return { data, uid: tourney.uid }
     }
-    async putWinner(gameUID, playerUID){
-        var { data, error } = await this.supabase
-        .from("games")
-        .update({ winner: playerUID })
-        .eq("uid",gameUID);
-        if(error) return { error: true, message: error.message }
-
+    async putWinner(gameUID, playerUID) {
+        var data = await this.finishGame(gameUID, playerUID)
         return data;
     }
 }

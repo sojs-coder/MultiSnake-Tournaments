@@ -26,7 +26,7 @@
     <details>
         <summary>Unactive Tourneys</summary>
         <ul>
-            {% for in unactiveTourneys %}
+            {% for t in unactiveTourneys %}
             <li>
                 <a href="/manage/{{ t.uid }}">{{ t.name }} | {{ t.players.length }} Players | {{ t.prize }} Prize | On
                     round {{ t.round_num }} | Starts at
