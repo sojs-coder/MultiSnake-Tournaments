@@ -348,6 +348,15 @@ class TourneyManager {
         if (players.error) return players
         return (players.indexOf(player) !== -1)
     }
+    async isTourneyValid(uid){
+        var t = await this.getTourney(uid);
+
+        if(!t || t.error) return false;
+        var { ongoing, complete, start_at } = t;
+        if (ongoing || complete || (new Date().getTime() > start_at)) return false;
+
+        return true;
+    }
     async addPlayer(tourneyUID, playerUID) {
         var { players, live_players, prize, ongoing, complete, entry_fee, start_at } = await this.getTourney(tourneyUID);
         var player = await this.getUser(playerUID);

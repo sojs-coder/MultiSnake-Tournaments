@@ -47,6 +47,7 @@ if(createRound){
     })
 }
 function handleCreateRound(data) {
+    console.log(data)
     if (data.error) return displayNotif(data.message, "red");
     var uid = data.data[0].uid
     displayNotif("Round " + uid + " created", "green")

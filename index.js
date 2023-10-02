@@ -68,7 +68,7 @@ app.get("/leaderboard", async (req, res) => {
     ranks = ranks.map(player => {
         player.elo = player.elo || "400*"
         return player
-    })
+    });
 
     res.render("leaderboard.njk", { ranks, user: req.session.user });
 });
@@ -82,7 +82,7 @@ app.get("/account/:uid", async (req, res, next) => {
     var updatedUser =await tManager.putUser(user);
     user ={ ...updatedUser[0], ...user}
     user.elo = user.elo || 400
-    if (req.params.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk", user);
+    if (req.params.uid == "c9ca879f-6511-42dd-9481-01e69c40af68") return res.render("sojs_view.njk", {...user, user});
 
     var tourneys = user.tourneys;
 
@@ -183,7 +183,7 @@ app.get("/tourneys", async (req,res)=>{
     for (var i = 0; i < completeTourneys.length; i++){
         completeTourneys[i].winnerFormatted = await tManager.getUser(completeTourneys[i].winner);
     }
-    res.render("alltourneys.njk",{ ongoingTourneys, completeTourneys });
+    res.render("alltourneys.njk",{ ongoingTourneys, completeTourneys, user: req.session.user });
 })
 app.get("/favicon.ico",(req,res)=>{
     res.sendFile(resolve("./public/assets/snake.png"))
@@ -240,7 +240,6 @@ app.post("/newTourney", express.json(), async (req, res) => {
 app.post("/get-join-link",express.json(),async (req,res)=>{
     if(!req.session.user) return res.json({ error: true, message: "Not authorized"})
     var game = await tManager.getGame(req.body.game_id);
-    
     if(game.start_at - new Date().getTime() <= 3*60*1000 && game.players.indexOf(req.session.user.uid) !== -1){
         res.json({ link: game.link})
     }else{
@@ -320,7 +319,7 @@ app.post("/create-payment-intent", express.json(), async (req, res) => {
     const { item } = req.body;
     var tourney = await tManager.getTourney(item.id);
     if (!tourney || tourney.error) return res.status(404).send({ error: "Tourney specified does not exist " });
-    if(tourney.ongoing || tourney.complete) return res.status(200).send({ error: "Tourney started or complete"});
+    if (tourney.ongoing || tourney.complete || (new Date().getTime() > tourney.start_at)) return res.status(403).send({ error: "Tourney started or complete"});
     if(!req.session.user || (req.session.user && !req.session.user.verified)) return res.status(403).send({ error: "Account not verified"})
     async function calculateOrderAmount() {
         var f = (x) => ((x + 30) / (1 - 0.029));
@@ -352,7 +351,7 @@ app.post('/stripe_webhook', bodyParser.raw({ type: 'application/json' }), async 
     let event;
 
     try {
-        event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+        event = await stripe.webhooks.constructEventAsync(payload, sig, endpointSecret);
     } catch (err) {
         console.log(err)
         return response.status(400).send(`Webhook Error: ${err.message}`);
@@ -373,7 +372,7 @@ app.post('/stripe_webhook', bodyParser.raw({ type: 'application/json' }), async 
             if (!tourney) {
                 return response.status(400).send("The tourney does not exist for some odd reason...")
             }
-
+            console.log(event.data.object)
             var tres = await tManager.addPlayer(event.data.object.metadata.tourneyUID, player.uid);
             return response.status(200).send(tres)
         }

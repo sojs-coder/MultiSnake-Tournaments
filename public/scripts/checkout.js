@@ -22,7 +22,10 @@ async function initialize() {
     body: JSON.stringify({ item }),
   });
   const { clientSecret, costs, error } = await response.json();
-  if(error) displayNotif(error, "red")
+  if(error) {
+    document.getElementById("submit").disabled = true;
+    displayNotif(error, "red");
+  }
   var baseCost = parseInt(document.getElementById("fee").getAttribute("data-base"));
   document.getElementById("fee").innerHTML = "$" + (costs[1] / 100 - baseCost).toFixed(2)
   document.getElementById("t").innerHTML = "$" + (costs[1] / 100)
