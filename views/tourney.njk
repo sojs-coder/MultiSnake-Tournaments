@@ -14,12 +14,13 @@
             {% include "nav.njk" %}
             <div class="main">
                 <h1 class="tourney-name">
-                    {{ name }}- ${{ prize }} Prize {% if (playerHasJoined) %}(Joined){% else %}
+                    {{ name }}- ${{ prize }} Prize* {% if (playerHasJoined) %}(Joined){% else %}
                         {% if not ongoing and not complete %}
                             <a href = "/join/{{ uid }}" class = "name-36">Join this tourney (${{ entry_fee }})</a>
                         {% endif %}
                     {% endif %}
                     <p class = "game-uid">{{ uid }}</p>
+                    <p class = "game-uid">10% deduction if under $500, otherwise 5%</p>
                 </h1>
 
                 <div class="bottom-row">
