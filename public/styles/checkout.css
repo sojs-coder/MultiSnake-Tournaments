@@ -25,7 +25,7 @@ body {
   background-color: black;
   margin: none;
   padding: none;
-  overflow: hidden;
+  overflow: scroll;
   color: white;
 }
 

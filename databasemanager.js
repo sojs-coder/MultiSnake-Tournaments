@@ -214,96 +214,90 @@ class TourneyManager {
         }
     }
     async createRound({ start_at, tourney }) {
-        var { uid, live_players: stillIn, start_at: tStart_at, max_games_day, game_hour_diff, round_num } = tourney
-        var games = await this.getGamesFromTourney(uid);
-        if (!games || games.error) return games;
-        var game_number = games.length;
-        stillIn = await Promise.all(stillIn.map(async (puid) => {
-            return dbManager.getUser(puid)
-        }));
-        stillIn = stillIn.map(user => {
-            return {
-                uid: user.uid,
-                username: user.username,
-                verified: user.verified,
-                elo: user.elo || 400
-            }
-        })
-        stillIn.sort((a, b) => {
-            return a.elo - b.elo
-        });
+        try {
+            var { uid, live_players: stillIn, start_at: tStart_at, max_games_day, game_hour_diff, round_num } = tourney
+            var games = await this.getGamesFromTourney(uid);
+            if (!games || games.error) return games;
+            var game_number = games.length;
+            stillIn = await Promise.all(stillIn.map(async (puid) => {
+                return dbManager.getUser(puid)
+            }));
+            stillIn = stillIn.map(user => {
+                return {
+                    uid: user.uid,
+                    username: user.username,
+                    verified: user.verified,
+                    elo: user.elo || 400
+                }
+            })
+            stillIn.sort((a, b) => {
+                return a.elo - b.elo
+            });
 
-        var groups = this.group(stillIn, 4);
-        if (round_num == 0) {
+            var groups = this.group(stillIn, 4);
+
+            var roundUID = guid();
+
+            var currentTime = start_at;
+            var gamesToday = 0;
+            var add24Hours = (t) => t + (1000 * 60 * 60 * 24);
+            var addXHours = (t, x) => t + (1000 * 60 * 60 * x);
+
+            var games = groups.map(players => {
+                players = players.map(p => p.uid);
+                var game_uid = guid();
+                var location = `location_${guid()}`
+                var webhookURL = `http://localhost:3000/webhook/${game_uid}`
+                var game = {
+                    uid: game_uid,
+                    winner: null,
+                    start_at: currentTime,
+                    complete: false,
+                    tourney: uid,
+                    ongoing: false,
+                    players,
+                    link: `https://multisnake.xyz/play/${location}?type=tourney`,
+                    round: roundUID,
+                    game_number: ++game_number
+                }
+                // send post to multisnake.xyz/restrict
+                gamesToday++;
+                currentTime = addXHours(currentTime, game_hour_diff);
+                if (gamesToday >= max_games_day) {
+                    currentTime = add24Hours(start_at);
+                    start_at = currentTime;
+                    gamesToday = 0;
+                }
+                this.restrictLocation(game_uid, location, game.start_at, players, webhookURL)
+                return game;
+            });
+            var round = {
+                uid: roundUID,
+                timestamp: start_at,
+                num_games: games.length,
+                num_players: groups.flat().length,
+                round_num: ++round_num,
+                tourney: uid
+            }
+            var { data, error } = await this.supabase
+                .from("rounds")
+                .insert(round)
+                .select();
+            if (error) return { error: true, message: error.message }
+            var { data, error } = await this.supabase
+                .from("games")
+                .insert(games)
+                .select();
+            if (error) return { error: true, message: error.message }
             var { data, error } = await this.supabase
                 .from("tourneys")
-                .update({ ongoing: true })
-                .eq("uid", uid)
-            if (error) return { error: true, error: error.message }
-        }else{
-            var { data, error } = await this.supabase
-            .from("tourneys")
-            .update({ round_num: ++round_num })
-            .eq("uid", uid)
-            if (error) return { error: true, error: error.message }
+                .update({ ongoing: true, round_num: ++round_num, on_round: roundUID })
+                .eq("uid", uid);
+            if (error) return { error: true, message: error.message, line: 295 }
+            return { success: true, uid: roundUID };
+        } catch (err) {
+            return { error: true, message: error }
         }
-
-        var roundUID = guid();
-        var currentTime = start_at;
-        var gamesToday = 0;
-        var add24Hours = (t) => t + (1000 * 60 * 60 * 24);
-        var addXHours = (t, x) => t + (1000 * 60 * 60 * x);
-
-        var games = groups.map(players => {
-            players = players.map(p => p.uid);
-            var game_uid = guid();
-            var location = `location_${guid()}`
-            var webhookURL = `http://localhost:3000/webhook/${game_uid}`
-            var game = {
-                uid: game_uid,
-                winner: null,
-                start_at: currentTime,
-                complete: false,
-                tourney: uid,
-                ongoing: false,
-                players,
-                link: `https://multisnake.xyz/play/${location}?type=tourney`,
-                round: roundUID,
-                game_number: ++game_number
-            }
-            // send post to multisnake.xyz/restrict
-            gamesToday++;
-            currentTime = addXHours(currentTime, game_hour_diff);
-            if (gamesToday >= max_games_day) {
-                currentTime = add24Hours(start_at);
-                start_at = currentTime;
-                gamesToday = 0;
-            }
-            this.restrictLocation(game_uid, location, game.start_at, players, webhookURL)
-            return game;
-        });
-        var round = {
-            uid: roundUID,
-            timestamp: start_at,
-            num_games: games.length,
-            num_players: groups.flat().length,
-            round_num: ++round_num,
-            tourney: uid
-        }
-        var { data, error } = await this.supabase
-            .from("rounds")
-            .insert(round)
-            .select()
-        if (error) return { error: true, error: error.message }
-        var { data, error } = await this.supabase
-            .from("games")
-            .insert(
-                games
-            )
-            .select()
-        if (error) return { error: true, error: error.message }
-
-        return data
     }
     async startTournament(uid) {
         var { live_players: stillIn, start_at, max_games_per_day, game_hour_diff, round_num } = await this.getTourney(uid);
@@ -348,10 +342,10 @@ class TourneyManager {
         if (players.error) return players
         return (players.indexOf(player) !== -1)
     }
-    async isTourneyValid(uid){
+    async isTourneyValid(uid) {
         var t = await this.getTourney(uid);
 
-        if(!t || t.error) return false;
+        if (!t || t.error) return false;
         var { ongoing, complete, start_at } = t;
         if (ongoing || complete || (new Date().getTime() > start_at)) return false;
 

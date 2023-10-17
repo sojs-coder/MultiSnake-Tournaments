@@ -4,16 +4,17 @@
 }
 .all-tourneys {
   display: flex;
+  background: #000000;
   flex-direction: column;
   gap: 0px;
   align-items: flex-start;
   justify-content: flex-start;
   position: relative;
-  height: 100vh;
+  height: 100%;
   width: 100%;
 }
 .main {
-  background: #000000;
+  color: red;
   padding: 25px;
   display: flex;
   flex-direction: column;
