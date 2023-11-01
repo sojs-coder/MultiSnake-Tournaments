@@ -247,7 +247,7 @@ class TourneyManager {
                 players = players.map(p => p.uid);
                 var game_uid = guid();
                 var location = `location_${guid()}`
-                var webhookURL = `http://localhost:3000/webhook/${game_uid}`
+                var webhookURL = `http://tournaments.multisnake.xyz/webhook/${game_uid}`
                 var game = {
                     uid: game_uid,
                     winner: null,
@@ -583,7 +583,7 @@ class DBManager {
             console.log(err);
         }
     }
-    async sendPaymentFailed(email, { uid, name }) {
+    async sendPaymentFailed(email, { uid, name }, reason) {
         const params = {
             Destination: {
                 ToAddresses: [email]
@@ -592,11 +592,11 @@ class DBManager {
                 Body: {
                     Html: {
                         Charset: "UTF-8",
-                        Data: `<h1>Hello ${email}</h1><p>You have recently signed up for the tournament ${name} (uid ${uid}). Sadly, your email does not seem to be associated with a user in our database, and we failed to you sign you up. If you feel this is a mistake, email me directly at "matfuller703@gmail.com".</p><p>If you have not created a multisnake account and linked it to MultiSnake Tournaments, you can <a href = "https://multisnake.xyz/signup>create an account here</a>, and link it <a href = "https://tournaments.multisnake.xyz/signup">here</a></p><p>Thank you for understanding, and you will be refunded in full, best of regards, SoJS</p>`
+                        Data: `<h1>Hello ${email}</h1><p>You have recently signed up for the tournament ${name} (uid ${uid}). ${reason}. You will be refunded in full. </p><p>If you think this was a mistake, please <a href = "mailto:sojs@multisnake.xyz>email me</a>.</p><p>Best regards, SoJS</p>`
                     },
                     Text: {
                         Charset: "UTF-8",
-                        Data: `Hello ${email}. \n You have recently signed up for the tournament ${name} (uid ${uid}). Sadly, your email does not seem to be associated with a user in our database, and we failed to sign you up. If you feel this is a mistake, email me directly at "matfuller703@gmail.com". If you have not created a multisnake account and linked it to MultiSnake Tournaments, you can do that by going to multisnake.xyz and clicking "signup", and then linking it to multisnake tournaments by going to tournaments.multisnake.xyz and clicking "signup" there as well. \n Thank you for your understanding, and you will be refunded in full, best of regards, SoJS`
+                        Data: `Hello ${email}. \n You have recently signed up for the tournament ${name} (uid ${uid}). ${reason}. You will be refunded in full. If you think this was a mistake, email me. \n\nBest regards, SoJS`
                     }
                 },
                 Subject: {
@@ -619,6 +619,7 @@ class DBManager {
 
 const dbManager = new DBManager();
 const tManager = new TourneyManager();
+
 
 module.exports = {
     dbManager,

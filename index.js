@@ -263,7 +263,9 @@ app.post("/webhook/:gameUID", express.json(), async (req, res) => {
                     roomUID: this.uid,
                     roomType: this.type
                 }, */
-    var { data, timestamp, type } = req.body;
+    var { data, timestamp, type, key } = req.body;
+    if(!data || !timestamp || !type || !key) return res.status(400).send("Malformed request")
+    /// double check key against env
     switch (type) {
         case "win":
             var { snake, roomUID, roomType } = data;
@@ -348,8 +350,8 @@ app.post('/stripe_webhook', bodyParser.raw({ type: 'application/json' }), async 
     const payload = request.body;
     const sig = request.headers['stripe-signature'];
     let event;
-    async function refund(event,tourney){
-        await dbManager.sendPaymentFailed(event.data.object.receipt_email, tourney);
+    async function refund(event,tourney,reason){
+        await dbManager.sendPaymentFailed(event.data.object.receipt_email, tourney,reason);
         const refund = await stripe.refunds.create({
             payment_intent: event.data.object.id,
         });
@@ -367,24 +369,24 @@ app.post('/stripe_webhook', bodyParser.raw({ type: 'application/json' }), async 
             var tourney = await tManager.getTourney(event.data.object.metadata.tourneyUID)
             player = player[0]
             if (!player) {
-                await refund(event, tourney)
-                return response.status(400).send(`Email ${event.data.object.receipt_email} not associated with a user in the database, refunding`);
+                await refund(event, tourney, `Email ${event.data.object.receipt_email} is not associeted with a user in the database. If you think this is a mistake, email me directly at sojs@multisnake.com`)
+                return response.status(200).send(`Email ${event.data.object.receipt_email} not associated with a user in the database, refunding`);
             }
             if (!tourney) {
-                await refund(event, tourney)
-                return response.status(400).send("The tourney does not exist for some odd reason...")
+                await refund(event, tourney,'This tourney does not exist.')
+                return response.status(200).send("The tourney does not exist for some odd reason...")
             }
             if (!tourney || tourney.error) {
-                await refund(event, tourney)
-                return response.status(404).send({ error: "Tourney specified does not exist" });
+                await refund(event, tourney, 'Retrieving the tourney returned an error')
+                return response.status(200).send({ error: "Tourney specified does not exist" });
             }
             if (tourney.ongoing || tourney.complete || (new Date().getTime() > tourney.start_at)) {
-                await refund(event, tourney)
-                return response.status(403).send({ error: "Tourney started or complete" });
+                await refund(event, tourney, 'Tourney has started or is complete')
+                return response.status(200).send({ error: "Tourney started or complete" });
             }
-            if (!req.session.user || (req.session.user && !req.session.user.verified)) {
-                await refund(event, tourney)
-                return response.status(403).send({ error: "Account not verified" })
+            if (!player || !player.verified) {
+                await refund(event, tourney, 'Your account is not verified')
+                return response.status(200).send({ error: "Account not verified" })
             }
             var tres = await tManager.addPlayer(event.data.object.metadata.tourneyUID, player.uid);
             return response.status(200).send(tres)
