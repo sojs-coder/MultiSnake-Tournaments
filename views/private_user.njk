@@ -48,7 +48,7 @@
                             <div class="game-number">Game #{{ game.game_number }}</div>
                             <div class = "game-players">
                                 {% for player in game.players %}
-                                    {% if (loop.index0 != 0) %}|{% endif %}{{ player.username }} ({{ player.elo }})
+                                    {% if (loop.index0 != 0) %}|{% endif %}&nbsp;{{ player.username }} ({{ player.elo }})
                                 {% endfor %}
                             </div>
                             {# <div class="game-players">Mollthecoder (400) | SoJS (538) | Fred (220) | Joe Mama (380)</div> #}

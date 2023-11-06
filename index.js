@@ -198,7 +198,7 @@ app.get("/tourney/:uid", async (req, res, next) => {
 
     tourney.players = await Promise.all(tourney.players.map(async player => {
         user = await tManager.getUser(player);
-        return { ...user[0], uid: player }
+        return { ...user[0], uid: player, elo: user[0].elo || 400 }
     }));
     games = games.map(game => {
         game.currentUserJoined = (game.players.indexOf(currentUserUid) !== -1)
@@ -257,19 +257,20 @@ app.post("/newRound", express.json(), async (req, res) => {
     if (!tres || tres.error) return res.status(500).send({ error: true, message: (tres) ? tres.message || "Something went wrong..." : "Something went wrong..." })
     return res.status(200).send({ data: tres })
 });
-app.post("/webhook/:gameUID", express.json(), async (req, res) => {
+app.post("/multisnake_link_hook", express.json(), async (req, res) => {
     /* data: {
                     snake,
                     roomUID: this.uid,
                     roomType: this.type
                 }, */
-    var { data, timestamp, type, key } = req.body;
-    if(!data || !timestamp || !type || !key) return res.status(400).send("Malformed request")
-    /// double check key against env
+    var { data, timestamp, type, key, gameUID } = req.body;
+    if(!data || !timestamp || !type || !key || !gameUID) return res.status(400).send("Malformed request")
+    if(key !== process.env["ROUND_KEY"]) return res.status(401).send("Invalid key");
     switch (type) {
         case "win":
             var { snake, roomUID, roomType } = data;
-            await tManager.putWinner(req.params.gameUID, snake);
+            if(!snake || !roomUID || !roomType) return res.status(400).send("Malformed request")
+            await tManager.putWinner(gameUID, snake);
             break;
     }
     res.json({ wheee: true })
@@ -415,7 +416,7 @@ app.post("/connect_account", express.json(), async (req, res) => {
 });
 
 app.use((req, res) => {
-    res.render("404.njk")
+    res.status(404).render("404.njk");
 })
 server.listen(3000, () => {
     console.log('Server Live');

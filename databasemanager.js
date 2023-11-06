@@ -215,7 +215,8 @@ class TourneyManager {
     }
     async createRound({ start_at, tourney }) {
         try {
-            var { uid, live_players: stillIn, start_at: tStart_at, max_games_day, game_hour_diff, round_num } = tourney
+            var { uid, live_players: stillIn, start_at: tStart_at, max_games_day, game_hour_diff, round_num } = tourney;
+            round_num += 1;
             var games = await this.getGamesFromTourney(uid);
             if (!games || games.error) return games;
             var game_number = games.length;
@@ -247,7 +248,7 @@ class TourneyManager {
                 players = players.map(p => p.uid);
                 var game_uid = guid();
                 var location = `location_${guid()}`
-                var webhookURL = `http://tournaments.multisnake.xyz/webhook/${game_uid}`
+                var webhookURL = `http://tournaments.multisnake.xyz/multisnake_link_hook`
                 var game = {
                     uid: game_uid,
                     winner: null,
@@ -276,7 +277,7 @@ class TourneyManager {
                 timestamp: start_at,
                 num_games: games.length,
                 num_players: groups.flat().length,
-                round_num: ++round_num,
+                round_num: round_num,
                 tourney: uid
             }
             var { data, error } = await this.supabase
@@ -291,20 +292,13 @@ class TourneyManager {
             if (error) return { error: true, message: error.message }
             var { data, error } = await this.supabase
                 .from("tourneys")
-                .update({ ongoing: true, round_num: ++round_num, on_round: roundUID })
+                .update({ ongoing: true, round_num, on_round: roundUID })
                 .eq("uid", uid);
             if (error) return { error: true, message: error.message, line: 295 }
             return { success: true, uid: roundUID };
         } catch (err) {
             return { error: true, message: error }
         }
-    }
-    async startTournament(uid) {
-        var { live_players: stillIn, start_at, max_games_per_day, game_hour_diff, round_num } = await this.getTourney(uid);
-
-
-        // https://www.unixtimestamp.com/
-        var games = await this.createRound(uid, groups, start_at, max_games_per_day, game_hour_diff, round_num + 1);
     }
     async createGame(players, start_at, tourney) {
         var game = {
