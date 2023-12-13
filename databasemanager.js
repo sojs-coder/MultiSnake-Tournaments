@@ -248,7 +248,7 @@ class TourneyManager {
                 players = players.map(p => p.uid);
                 var game_uid = guid();
                 var location = `location_${guid()}`
-                var webhookURL = `http://tournaments.multisnake.xyz/multisnake_link_hook`
+                var webhookURL = `https://tournaments.multisnake.xyz/multisnake_link_hook`
                 var game = {
                     uid: game_uid,
                     winner: null,

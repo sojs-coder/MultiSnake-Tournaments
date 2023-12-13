@@ -27,7 +27,7 @@
 
                 <div class="bottom-row">
                     <div class="running-games">
-                        {% if ongoing %}
+                        {% if ongoing or complete %}
                             <h2 class="game-round">Games (Round {{ round_num }})</h2>
                             <div class="game-column">
                                 {% for game in games %}

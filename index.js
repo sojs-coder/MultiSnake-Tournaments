@@ -258,6 +258,7 @@ app.post("/newRound", express.json(), async (req, res) => {
     return res.status(200).send({ data: tres })
 });
 app.post("/multisnake_link_hook", express.json(), async (req, res) => {
+    console.log(req.body)
     /* data: {
                     snake,
                     roomUID: this.uid,
@@ -270,10 +271,10 @@ app.post("/multisnake_link_hook", express.json(), async (req, res) => {
         case "win":
             var { snake, roomUID, roomType } = data;
             if(!snake || !roomUID || !roomType) return res.status(400).send("Malformed request")
-            await tManager.putWinner(gameUID, snake);
+            await tManager.putWinner(gameUID, snake.uid);
             break;
     }
-    res.json({ wheee: true })
+    res.status(200).json({ success: true })
 })
 app.post('/login', express.json(), async (req, res) => {
     const { email, password } = req.body;
