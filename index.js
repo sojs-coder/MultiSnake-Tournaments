@@ -329,34 +329,40 @@ app.post("/find_account", express.json(), async (req, res) => {
     }
 });
 app.post("/create-payment-intent", express.json(), async (req, res) => {
-    const { item } = req.body;
-    var tourney = await tManager.getTourney(item.id);
-    if (!tourney || tourney.error) return res.status(404).send({ error: "Tourney specified does not exist" });
-    if (tourney.ongoing || tourney.complete || (new Date().getTime() > tourney.start_at)) return res.status(403).send({ error: "Tourney started or complete" });
-    if (!req.session.user || (req.session.user && !req.session.user.verified)) return res.status(403).send({ error: "Account not verified" })
-    async function calculateOrderAmount() {
-        var f = (x) => ((x + 30) / (1 - 0.029));
-        return [tourney.entry_fee, Math.ceil(f(tourney.entry_fee * 100))];
+    try{
+        const { item } = req.body;
+        var tourney = await tManager.getTourney(item.id);
+        if (!tourney || tourney.error) return res.status(404).send({ error: "Tourney specified does not exist" });
+        if (tourney.ongoing || tourney.complete || (new Date().getTime() > tourney.start_at)) return res.status(403).send({ error: "Tourney started or complete" });
+        if (!req.session.user || (req.session.user && !req.session.user.verified)) return res.status(403).send({ error: "Account not verified" });
+        if(tourney.players.indexOf(req.session.user.uid) !== -1) return res.status(403).send({error: "You have already joined this tourney"})
+        async function calculateOrderAmount() {
+            var f = (x) => ((x + 30) / (1 - 0.029));
+            return [tourney.entry_fee, Math.ceil(f(tourney.entry_fee * 100))];
+        }
+        // Create a PaymentIntent with the order amount and currency
+
+        var costs = await calculateOrderAmount(item);
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: costs[1],
+            currency: "usd",
+            metadata: {
+                tourneyUID: item.id
+            },
+            // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+            automatic_payment_methods: {
+                enabled: true,
+            },
+        });
+
+        res.send({
+            clientSecret: paymentIntent.client_secret,
+            costs
+        })
+    }catch(err){
+        console.log(err.message)
+        res.status(500).send({code: 500, message: err.message, error: err.message})
     }
-    // Create a PaymentIntent with the order amount and currency
-
-    var costs = await calculateOrderAmount(item);
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: costs[1],
-        currency: "usd",
-        metadata: {
-            tourneyUID: item.id
-        },
-        // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-        automatic_payment_methods: {
-            enabled: true,
-        },
-    });
-
-    res.send({
-        clientSecret: paymentIntent.client_secret,
-        costs
-    });
 });
 app.post('/stripe_webhook', bodyParser.raw({ type: 'application/json' }), async (request, response) => {
     const payload = request.body;
