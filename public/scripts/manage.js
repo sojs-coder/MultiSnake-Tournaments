@@ -49,7 +49,7 @@ if(createRound){
 function handleCreateRound(data) {
     console.log(data);
     if (data.error) return displayNotif(data.message, "red");
-    var uid = data.uid
+    var uid = data.data.uid
     displayNotif("Round " + uid + " created", "green")
 }
 function handleCreateTourney(data) {
