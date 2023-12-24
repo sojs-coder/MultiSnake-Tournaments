@@ -313,6 +313,16 @@ app.post("/find_account", express.json(), async (req, res) => {
         if (!user) {
             return res.status(400).json({ code: 400, message: "No user found", color: "red" })
         }
+        if(user.Count >= 1){
+            // remove password hash, fastest time to win, games played, and games won feilds from each user
+            user.Items = user.Items.map(item => {
+                delete item.passwordHash;
+                delete item.fastestTimeToWin;
+                delete item.gamesPlayed;
+                delete item.gamesWon;
+                return item;
+            })
+        }
         res.status(200).json(user)
     } catch (err) {
         return res.status(500).json({ code: 500, message: err.message, error: err, color: "red" })
