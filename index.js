@@ -91,6 +91,7 @@ app.get("/account/:uid", async (req, res, next) => {
     }));
     tourneys = tourneys.map(tourney => {
         var mUID = user.uid;
+        tourney.ranked_players.push(tourney.winner)
         var ranks = tourney.ranked_players.toReversed();
 
         var rank = ranks.indexOf(mUID);

@@ -17,7 +17,7 @@
                 <h1 class="multi-snake-tournaments">MultiSnake Tournaments</h1>
                 {% if t %}
                 <script>
-                    setInterval(count, 500);
+                    var x = setInterval(count, 500);
                     function count() {
                         var countDownDate = parseInt("{{ t.start_at }}");
                         var now = new Date().getTime();
@@ -37,15 +37,24 @@
                         h.innerHTML = hours;
                         m.innerHTML = minutes;
                         s.innerHTML = seconds;
+                        if(timeleft < 0) {
+                            clearInterval(x);
+                            d.innerHTML = 0;
+                            h.innerHTML = 0;
+                            m.innerHTML = 0;
+                            s.innerHTML = 0;
+
+                            location.reload();
+                        }
                     }
                 </script>
                 <p class="timer">
                     Tourney starts in
                 </p>
                 <p class = "timer">
-                    <span id = "d"></span>&nbsp;days,&nbsp;<span id = "h"></span>&nbsp;hours, &nbsp;<span id = "m"></span>&nbsp;minutes, &nbsp;<span id = "s"></span>&nbsp;seconds
+                    <span id = "d">--</span>&nbsp;days,&nbsp;<span id = "h">--</span>&nbsp;hours, &nbsp;<span id = "m">--</span>&nbsp;minutes, &nbsp;<span id = "s">--</span>&nbsp;seconds
                 </p>
-                <a class="join-the-tournament" href = "/join/{{ t.uid }}">Join the tournament</a>
+                <a class="join-the-tournament" href = "/join/{{ t.uid }}">Join {{ t.name }} </a>
                 <p class="_156-players-780-prize">{{ t.players.length }} Players | ${{ t.prize }} Prize</p>
                 {% else %}
                 <p class="timer">

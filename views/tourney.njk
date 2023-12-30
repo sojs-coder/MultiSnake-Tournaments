@@ -3,28 +3,29 @@
     <head>
         <script src="https://js.stripe.com/v3/"></script>
         <meta charset="UTF-8">
-        <script src = "/scripts/helpers.js"></script>
+        <script src="/scripts/helpers.js"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/styles/tourney.css">
         <link rel="stylesheet" href="/styles/universal.css">
         <title>{{ name }} | MultiSnake Tournaments</title>
-        <script src = "/scripts/tourney_view.js"></script>
+        <script src="/scripts/tourney_view.js"></script>
     </head>
     <body>
         <div class="tourney-games">
             {% include "nav.njk" %}
             <div class="main">
                 <h1 class="tourney-name">
-                    {{ name }}- ${{ prize }} Prize* {% if (playerHasJoined) %}(Joined){% else %}
+                    {{ name }}- ${{ prize }} Prize*
+                    {% if (playerHasJoined) %}(Joined)
+                    {% else %}
                         {% if not ongoing and not complete %}
-                            <a href = "/join/{{ uid }}" class = "name-36">Join this tourney (${{ entry_fee }})</a>
+                            <a href="/join/{{ uid }}" class="name-36">Join this tourney (${{ entry_fee }})</a>
                         {% endif %}
                     {% endif %}
-                    <p class = "game-uid">{{ uid }}</p>
-                    <p class = "game-uid">*10% deduction if under $500, otherwise 5%</p>
+                    <p class="game-uid">{{ uid }}</p>
+                    <p class="game-uid">*10% deduction if under $500, otherwise 5%</p>
                 </h1>
-
                 <div class="bottom-row">
                     <div class="running-games">
                         {% if ongoing or complete %}
@@ -45,9 +46,12 @@
                                         </div>
                                         <div class="game-uid">{{ game.uid }}</div>
                                         {% for player in game.players %}
-                                            <a href = "/account/{{ player.uid }}" class="name-24">
+                                            <a href="/account/{{ player.uid }}" class="name-24">
                                                 {% if player.username %}
-                                                    {{ player.username }} ({{ player.elo }}) {% if player.isWinner %} - Winner {% endif %}
+                                                    {{ player.username }} ({{ player.elo }})
+                                                    {% if player.isWinner %}
+                                                        - Winner
+                                                    {% endif %}
                                                 {% else %}
                                                     {{ player.uid }}
                                                 {% endif %}
@@ -59,61 +63,69 @@
                         {% else %}
                             <p class="game-round">Round 1 games will be released in</p>
                             <script>
-                                setInterval(count, 500);
+                                var countInt = setInterval(count, 500);
                                 function count() {
                                     var countDownDate = parseInt("{{ start_at }}");
                                     var now = new Date().getTime();
                                     var timeleft = countDownDate - now;
-
                                     var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
                                     var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                                     var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
                                     var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
-
                                     var d = document.getElementById("d");
                                     var h = document.getElementById("h");
                                     var m = document.getElementById("m");
                                     var s = document.getElementById("s");
-
                                     d.innerHTML = days;
                                     h.innerHTML = hours;
                                     m.innerHTML = minutes;
                                     s.innerHTML = seconds;
-                                }
-                            </script>
-                            <div class="game-time">
-                                <span id = "d"></span>&nbsp;days,&nbsp;<span id = "h"></span>&nbsp;hours, &nbsp;<span id = "m"></span>&nbsp;minutes, &nbsp;<span id = "s"></span>&nbsp;seconds
-                             </div>
-                        {% endif %}
-                    </div>
-                    <div class="players">
-                        <div class="player-list">
-                            <h2 class="standing-title">Standing</h2>
-                            <div class="standing">
-                                {% for player in live_players %}
-                                    <a href = "/account/{{ player.uid }}" class="name-24">
-                                        {% if player.username %}{{ player.username }} ({{ player.elo }})
-                                        {% else %}{{ player.uid }}
-                                        {% endif %}
-                                    </a>
-                                {% endfor %}
-                            </div>
-                            <h2 class="eliminated-title">Eliminated</h2>
-                            <div class="eliminated">
-                                {% for player in ranked_players %}
-                                    <a href = "/account/{{ player.uid }}" class="name-242">
-                                        {% if player.username %}{{ player.username }} ({{ player.elo }})
-                                        {% else %}{{ player.uid }}
-                                        {% endif %}
-                                    </a>
-                                {% endfor %}
+                                    if (timeleft < 0) {
+                                        clearInterval(countInt);
+                                        document.getElementById("d").innerHTML = "0";
+                                        document.getElementById("h").innerHTML = "0";
+                                        document.getElementById("m").innerHTML = "0";
+                                        document.getElementById("s").innerHTML = "0";
+                                        location.reload();
+                                    }
+                                    </script>
+                                    <div class="game-time">
+                                        <span id="d">--</span>&nbsp;days,&nbsp;<span id="h">--</span>&nbsp;hours, &nbsp;<span id="m">--</span>&nbsp;minutes, &nbsp;<span id="s">--</span>&nbsp;seconds
+                                    </div>
+                                {% endif %}
+                        </div>
+                        <div class="players">
+                            <div class="player-list">
+                                <h2 class="standing-title">Standing</h2>
+                                <div class="standing">
+                                    {% for player in live_players %}
+                                        <a href="/account/{{ player.uid }}" class="name-24">
+                                            {% if player.username %}
+                                                {{ player.username }} ({{ player.elo }})
+                                            {% else %}
+                                                {{ player.uid }}
+                                            {% endif %}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                                <h2 class="eliminated-title">Eliminated</h2>
+                                <div class="eliminated">
+                                    {% for player in ranked_players %}
+                                        <a href="/account/{{ player.uid }}" class="name-242">
+                                            {% if player.username %}
+                                                {{ player.username }} ({{ player.elo }})
+                                            {% else %}
+                                                {{ player.uid }}
+                                            {% endif %}
+                                        </a>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div id="notif-box"></div>
+            <div id="notif-box"></div>
+        </body>
     </body>
 </html>

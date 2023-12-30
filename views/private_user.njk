@@ -132,9 +132,9 @@
                                 {% if t.ongoing %}
                                      Round {{ t.round_num }}
                                 {% else %}
-                                  Starts in&nbsp;<span id="d{{ loop.index }}"></span>&nbsp;days,&nbsp;<span id="h{{ loop.index }}"></span>&nbsp;hours,&nbsp;<span id="m{{ loop.index }}"></span>&nbsp;minutes, and&nbsp;<span id="s{{ loop.index }}"></span>&nbsp;seconds
+                                  Starts in&nbsp;<span id="d{{ loop.index }}">--</span>&nbsp;days,&nbsp;<span id="h{{ loop.index }}">--</span>&nbsp;hours,&nbsp;<span id="m{{ loop.index }}">--</span>&nbsp;minutes, and&nbsp;<span id="s{{ loop.index }}">--</span>&nbsp;seconds
                                 <script>
-                                        setInterval(count, 500);
+                                        var joinedTourneysInterval{{ loop.index }} = setInterval(count, 500);
                                         function count() {
                                             var countDownDate = parseInt("{{ t.start_at }}");
                                             var now = new Date().getTime();
@@ -154,6 +154,16 @@
                                             h.innerHTML = hours;
                                             m.innerHTML = minutes;
                                             s.innerHTML = seconds;
+
+                                            if(timeleft <= 0) {
+                                                clearInterval(joinedTourneysInterval{{ loop.index }});
+                                                d.innerHTML = "0";
+                                                h.innerHTML = "0";
+                                                m.innerHTML = "0";
+                                                s.innerHTML = "0";
+
+                                                window.location.reload();
+                                            }
                                         }
                                     </script>
                                 {% endif %}
@@ -175,7 +185,7 @@
                                 </h2>
                                 <div class="tourney-players">{{ t.players.length }} Players | ${{ t.prize }} prize</div>
                                 <script>
-                                    setInterval(count, 500);
+                                    var joinTourneysInterval{{ loop.index }} = setInterval(count, 500);
                                     function count() {
                                         var countDownDate = parseInt("{{ t.start_at }}");
                                         var now = new Date().getTime();
@@ -195,6 +205,16 @@
                                         h.innerHTML = hours;
                                         m.innerHTML = minutes;
                                         s.innerHTML = seconds;
+
+                                        if(timeleft <= 0) {
+                                            clearInterval(joinTourneysInterval{{ loop.index }});
+                                            d.innerHTML = "0";
+                                            h.innerHTML = "0";
+                                            m.innerHTML = "0";
+                                            s.innerHTML = "0";
+
+                                            window.location.reload();
+                                        }
                                     }
                                 </script>
                                 <div class="tourney-start">
@@ -202,14 +222,14 @@
                     Round {{ t.round_num }}
                                     {% else %}
                     Starts in&nbsp;
-                    <span id="d{{ loop.index }}"></span>
+                    <span id="d{{ loop.index }}">--</span>
                     &nbsp;days,&nbsp;
-                    <span id="h{{ loop.index }}"></span>
+                    <span id="h{{ loop.index }}">--</span>
                     &nbsp;hours,
                     &nbsp;
-                    <span id="m{{ loop.index }}"></span>
+                    <span id="m{{ loop.index }}">--</span>
                     &nbsp;minutes, and&nbsp;
-                    <span id="s{{ loop.index }}"></span>
+                    <span id="s{{ loop.index }}">--</span>
                     &nbsp;seconds
                     {% endif %}
                                 </div>
