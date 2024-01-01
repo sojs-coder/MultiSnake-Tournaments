@@ -58,8 +58,8 @@ class TourneyManager {
         };
         return user;
     }
-    async putUser({ uid, username, elo, email, passwordHash, verified, gamesPlayed }) {
-        var user = { uid, username, elo, email, passwordHash, verified, gamesPlayed }
+    async putUser({ uid, username, elo, email, passwordHash, verified, gamesPlayed, gamesWon }) {
+        var user = { uid, username, elo, email, passwordHash, verified, gamesPlayed, gamesWon }
         const { data, error } = await this.supabase
             .from('users')
             .upsert(user)
@@ -216,6 +216,7 @@ class TourneyManager {
     async createRound({ start_at, tourney }) {
         try {
             var { uid, live_players: stillIn, start_at: tStart_at, max_games_day, game_hour_diff, round_num } = tourney;
+            const tuid = uid;
             round_num += 1;
             var games = await this.getGamesFromTourney(uid);
             if (!games || games.error) return games;
@@ -257,7 +258,7 @@ class TourneyManager {
                     tourney: uid,
                     ongoing: false,
                     players,
-                    link: `https://multisnake.xyz/play/${location}?type=tourney`,
+                    link: `https://multisnake.xyz/play/${location}?type=tourney&tuid=${tuid}`,
                     round: roundUID,
                     game_number: ++game_number
                 }
@@ -401,7 +402,7 @@ class TourneyManager {
             return player !== winner;
         });
         if (error) return message;
-        var { live_players, ranked_players, error, message } = await this.getTourney(tourney);
+        var { live_players, ranked_players, error, message, prize } = await this.getTourney(tourney);
         if (error) return { error, message }
         live_players = live_players.filter(player => {
             return deadPlayers.indexOf(player) == -1;
@@ -425,6 +426,16 @@ class TourneyManager {
                 console.error(error);
                 return { error: true, message: error.message }
             };
+            var userData = await this.getUser(live_players[0]);
+            var user = userData[0];
+            var { data, error } = await this.supabase
+                .from('users')
+                .update({ prizesWon: user.prizesWon + prize })
+                .eq("uid", live_players[0]);
+            if (error) {
+                console.error(error);
+                return { error: true, message: error.message }
+            }
         } else {
             var { data, error } = await this.supabase
                 .from('tourneys')

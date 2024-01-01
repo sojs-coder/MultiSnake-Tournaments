@@ -269,3 +269,14 @@ function displayNotif(notifText, color) {
         document.getElementById("notif-box").removeChild(notification);
     }, 3000);
 }
+
+// show an alert if the user is on mobile that they should move to desktop
+
+function checkMobile() {
+    alert(window.innerWidth)
+    if (window.innerWidth < 800) {
+        alert("Please move to desktop for the best experience");
+    }
+}
+
+checkMobile();

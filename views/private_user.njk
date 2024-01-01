@@ -33,9 +33,6 @@
                         </p>
                     {% endif %}
                     <p class="games-won-game-played">{{ gamesWon }} games won/{{ gamesPlayed }} games played</p>
-                    {# <p class="tourneys-won-tourneys-played">
-                    {{ tourneysWon }} tourneys won/{{ tourneysPlayed }} tourneys played
-                    </p> #}
                 </div>
                 <div class="false-hr"></div>
                 <h1 class = "upcoming_games">Upcoming Games</h1>
@@ -100,7 +97,7 @@
                                             .then((data) => {
                                                 document
                                                     .getElementById("link-{{ loop.index }}")
-                                                    .innerHTML = `<a href = "${data.link}">${data.link}</a>`;
+                                                    .innerHTML = `<a href = "${data.link}">Click here to join your game</a>`;
                                             })
                                             .catch(console.log)
                                         } else {

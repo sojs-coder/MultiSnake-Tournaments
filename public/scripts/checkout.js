@@ -1,5 +1,5 @@
 // This is your test publishable API key.
-const stripe = Stripe("pk_live_51NgCKlD26sImJXmkQNt2x6ShjPbSdRJmlpPobKEqVxWpLrYVz4d9MwSpKXU8SdXevljWdCxBDDpJBOInBLE3dOUr00xWyqXkrP");
+const stripe = Stripe("pk_test_51NgCKlD26sImJXmki57nywOZ4grWg3jp29GgJlH2U4iClxnjLNi2ESyZSCYsQ1QKauN127qgvETzEqGi9DdiaKw700LI6BC8ML");
 
 // The item the customer wants to buy
 const item = { id: window.checkout.TUID };

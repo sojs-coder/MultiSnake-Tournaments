@@ -73,7 +73,7 @@ app.get("/leaderboard", async (req, res) => {
     res.render("leaderboard.njk", { ranks, user: req.session.user });
 });
 app.get("/logout", (req, res) => {
-    delete req.session.user;
+    req.session.destroy();
     res.redirect("/login")
 })
 app.get("/account/:uid", async (req, res, next) => {
@@ -242,9 +242,9 @@ app.post("/get-join-link", express.json(), async (req, res) => {
     if (!req.session.user) return res.json({ error: true, message: "Not authorized" })
     var game = await tManager.getGame(req.body.game_id);
     if (game.start_at - new Date().getTime() <= 3 * 60 * 1000 && game.players.indexOf(req.session.user.uid) !== -1) {
-        res.json({ link: game.link })
+        res.json({ link: game.link });
     } else {
-        res.json({ error: true, message: "not authorized" })
+        res.json({ error: true, message: "not authorized" });
     }
 
 })
@@ -254,12 +254,10 @@ app.post("/newRound", express.json(), async (req, res) => {
     if (!tourney || tourney.error) return res.status(500).send({ error: true, message: "Tourney UID malformed or does not exist" })
     if (!start_at) return res.status(500).send({ error: true, message: "No start time provided" });
     var tres = await tManager.createRound({ start_at, tourney });
-    console.log(tres)
     if (!tres || tres.error) return res.status(500).send({ error: true, message: (tres) ? tres.message || "Something went wrong..." : "Something went wrong..." })
     return res.status(200).send({ data: tres })
 });
 app.post("/multisnake_link_hook", express.json(), async (req, res) => {
-    console.log(req.body)
     /* data: {
                     snake,
                     roomUID: this.uid,
