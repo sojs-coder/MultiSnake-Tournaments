@@ -2,17 +2,65 @@ require("dotenv").config();
 const express = require('express');
 const http = require('http');
 const nunjucks = require("nunjucks");
-const session = require('express-session');
+const sqlite = require("better-sqlite3");
+const session = require("express-session")
 const { sortByTime } = require("./helpers.js")
 const { resolve } = require("path");
 const { dbManager, tManager } = require("./databasemanager");
 const app = express();
 const server = http.createServer(app);
 const stripe = require("stripe")(process.env.STRIPE_SECRET)
+const morgan = require("morgan")
 const bodyParser = require('body-parser');
 const endpointSecret = process.env.SIGN_SECRET;
 
-const morgan = require("morgan")
+
+
+const SqliteStore = require("better-sqlite3-session-store")(session)
+const db = new sqlite("../sessions.db", { verbose: console.log });
+
+
+app.use(
+    session({
+      store: new SqliteStore({
+        client: db, 
+        expired: {
+          clear: true,
+          intervalMs: 3600000 //ms = 15min
+        }
+      }),
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        domain: '.multisnake.xyz', // common domain for both servers
+      }
+    })
+  )
+  app.use(async (req, res, next) => {
+    // check to see if the session was set by the other server
+    if(req.session.setBy == "multisnake-tournaments"){
+        next();
+    }else if(req.session.setBy == "multisnake-v2"){
+        // pull tourneys, prizesWon from database
+        var userData = await tManager.getUser(req.session.user.uid);
+        if(!userData || userData.error) return next();
+        var { tourneys, prizesWon } = userData[0];
+        // concat multisnake-v2 specific info to the session
+        req.session.user = {
+            ...req.session.user,
+            tourneys,
+            prizesWon
+        }
+
+        req.session.setBy = "both"
+        next();
+    }else if(req.session.setBy == "both"){
+        next();
+    }else{
+        next();
+    }
+})
 app.use(express.static(
     "./public"
 ));
@@ -21,14 +69,6 @@ nunjucks.configure("views", {
     express: app
 });
 app.use(morgan('dev'))
-app.use(
-    session({
-        secret: process.env.KEY,
-        resave: false,
-        saveUninitialized: true,
-        persist: true,
-    })
-);
 app.get("/", async (req, res) => {
     const ongoingTourneys = await tManager.getActiveTourneys();
     if (ongoingTourneys.length >= 1) {
@@ -295,6 +335,7 @@ app.post('/login', express.json(), async (req, res) => {
         // Set session data
         delete user.passwordHash;
         req.session.user = user;
+        req.session.setBy = "multisnake-tournaments";
 
         // Return success response
         res.status(200).json({ message: 'Login successful', color: "green", redirect: req.session.goto || "/account" });
